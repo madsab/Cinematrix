@@ -1,9 +1,33 @@
-'use client'
-import {db} from './firebaseConfig';
+'use client';
+
+import { signOut, useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+
+export default function Home() {
+  const session = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect('/signin');
+    },
+  });
+  return (
+    <div className="p-8">
+      <div>{session?.data?.user?.email }</div>
+      <button onClick={() => signOut()}>Logout</button>
+    </div>
+  )
+}
+
+Home.requireAuth = true
+
+
+
+
+/*import {db} from './firebaseConfig';
 import {collection, addDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
 
-async function addDataToFireStore(name, email, message) {
+async function addDataToFireStore(name: string, email: string, message: string) {
   try {
     const docRef = await addDoc(collection(db, "messages"), {
       name: name,
@@ -17,8 +41,6 @@ async function addDataToFireStore(name, email, message) {
     return false;
   }
 }
-
-//import Image from "next/image";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -88,4 +110,4 @@ export default function Home() {
       </form>
     </main>
   );
-}
+}*/
