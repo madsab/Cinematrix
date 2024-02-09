@@ -2,8 +2,6 @@
 
 import { signOut, useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
-import Image from "next/image";
-
 
 export default function Home() {
   const session = useSession({
@@ -12,9 +10,12 @@ export default function Home() {
       redirect('/signin');
     },
   });
+
+  console.log(session?.data?.user?.id);
+
   return (
     <div className="p-8">
-      <div>{session?.data?.user?.email }</div>
+      <div>Logged in with mail: {session?.data?.user?.email} ID: {session?.data?.user?.id as string}</div>
       <button onClick={() => signOut()}>Logout</button>
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
