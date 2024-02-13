@@ -2,7 +2,7 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { auth } from '../firebase';
+import { auth } from '@/app/firebase/config';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -13,8 +13,11 @@ export default function Signup() {
   const signup = () => {
     createUserWithEmailAndPassword(auth, email, password).then(
         () => router.push('/')
-    );
-  };
+    ).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode, errorMessage);
+    })};
 
   return (
     <>

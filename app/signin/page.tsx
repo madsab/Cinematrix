@@ -1,12 +1,25 @@
 'use client';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import {signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import {auth} from '@/app/firebase/config';
 
 export default function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+
+  const signin = () => {
+    signInWithEmailAndPassword(auth, email, password).then(
+        () => {
+            router.push('/');
+        }
+    ).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode, errorMessage);
+    });
+  }
 
     return (
         <>
@@ -47,7 +60,7 @@ export default function Signin() {
                         <button
                             className="bg-gradient-to-tr from-fire to-salmon px-5 py-2 rounded-md text-white hover:underline hover:from-fire hover:to-fire transition duration-150 ease-in-out"
                             disabled={!email || !password}
-                            onClick={() => signIn('credentials', {email, password, redirect: true, callbackUrl: '/'})}
+                            onClick={() => signin()}
                         >
                             Sign in
                         </button>

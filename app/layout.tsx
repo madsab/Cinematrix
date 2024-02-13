@@ -25,7 +25,6 @@ export default function RootLayout({
   );
 }*/
 
-import SessionProvider from './SessionProvider';
 import './globals.css';
 export default function RootLayout({
   children,
@@ -35,9 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SessionProvider>
-          {children}
-        </SessionProvider>
+        {children}
       </body>
     </html>
   )
