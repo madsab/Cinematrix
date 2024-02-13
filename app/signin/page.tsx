@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import {signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import {signInWithEmailAndPassword} from 'firebase/auth';
 import {auth} from '@/app/firebase/config';
 
 export default function Signin() {
@@ -10,6 +10,7 @@ export default function Signin() {
   const router = useRouter();
 
   const signin = () => {
+    
     signInWithEmailAndPassword(auth, email, password).then(
         () => {
             router.push('/');
