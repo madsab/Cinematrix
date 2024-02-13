@@ -18,7 +18,14 @@ export default function Home() {
       setMail(user.email as string);
     }
     else {
-      router.push("signin");
+      try {
+        router.push("/signin");
+      } catch (error) {
+        /*
+        Fant ikke ut hvordan jeg stopper router fra å
+        lage en error, alt fungerer... håper jeg :o
+        */
+      }
     }
   });
   
@@ -33,6 +40,3 @@ export default function Home() {
     </div>
   )
 }
-
-
-Home.requireAuth = true
