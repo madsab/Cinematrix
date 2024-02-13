@@ -10,7 +10,6 @@ export default function Signin() {
   const router = useRouter();
 
   const signin = () => {
-    
     signInWithEmailAndPassword(auth, email, password).then(
         () => {
             router.push('/');
