@@ -8,7 +8,7 @@ const Navbar = () => {
         <div className=" bg-gradient-to-r from-black to-pink-900 w-full p-2 flex">
             <div className=" flex-1 flex justify-evenly items-center">
                 <Link href="/"><Image src={Logo} width={100} height={40} alt={"Cinematrix Logo"}/></Link>
-                <Link href="/">Browse</Link>
+                <Link href="/browse">Browse</Link>
                 <Link href="/movies">Movies</Link>
                 <Link href="/series">Series</Link>
                 <div className="relative hidden md:block">
