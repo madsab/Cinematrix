@@ -2,7 +2,10 @@
 import Annika from "./assets/images/Anikka.jpeg";
 import { MovieCardProps } from "./components/organisms/MovieCard";
 import MovieScrollArea from "./components/MovieScrollArea";
-import { randomUUID } from "crypto";
+import { signOut } from "firebase/auth";
+import { auth } from "@/app/firebase/config"; // db can be imported from here
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const dummyMovies: MovieCardProps[] = [
   {
@@ -78,11 +81,41 @@ const dummyMovies: MovieCardProps[] = [
 ];
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+  const [mail, setMail] = useState<string>("");
+
+  const router = useRouter();
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      console.log(user.uid);
+      setLoading(false);
+      setMail(user.email as string);
+    } else {
+      try {
+        router.push("/signin");
+      } catch (error) {
+        /*
+        Fant ikke ut hvordan jeg stopper router fra å
+        lage en error, alt fungerer... håper jeg :o
+        */
+      }
+    }
+  });
+
   return (
     <main className="">
-      <section className="mt-4">
-        <MovieScrollArea title="For You" movies={dummyMovies} />
-      </section>
+      {loading ? (
+        <div>Loading</div>
+      ) : (
+        <div>
+          <section className="mt-4">
+            <MovieScrollArea title="For You" movies={dummyMovies} />
+          </section>
+          <div>Logged in with mail: {mail}</div>
+          <button onClick={() => signOut(auth)}>Logout</button>
+        </div>
+      )}
     </main>
   );
 }
