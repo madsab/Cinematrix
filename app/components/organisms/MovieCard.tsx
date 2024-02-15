@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image, { StaticImageData } from "next/image";
-import React, { FC } from "react";
+import { FC, useState } from "react";
 import cn from "classnames";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +15,7 @@ export interface MovieCardProps {
 
 const MovieCard: FC<MovieCardProps> = ({ openRating, ...props }) => {
   const router = useRouter();
-  const [seen, setSeen] = React.useState(false);
+  const [seen, setSeen] = useState(false);
   const eye = seen ? "tabler:eye" : "tabler:eye-off";
   const markAsSeen = () => {
     setSeen(!seen);
