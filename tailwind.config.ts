@@ -20,6 +20,9 @@ const config: Config = {
         'grape': '#510A32',
         'night': '#2D142C'
       },
+      boxShadow: {
+        "inner-x": "inset 0px 0px 15px 10px rgba(0, 0, 0, 0.5);",
+    },
    },
   plugins: [],
 }
