@@ -1,10 +1,11 @@
 "use client";
-import React, { FC } from "react";
+import React, { ChangeEvent, FC, useEffect, useRef } from "react";
 import MovieCard, { MovieCardProps } from "./organisms/MovieCard";
 import { ScrollArea, ScrollBar } from "./organisms/ScrollArea";
 import cn from "classnames";
 import { Separator } from "./atoms/Seperator";
 import PopUp from "./organisms/PopUp";
+import Stars from "./atoms/Stars";
 interface MovieScrollAreaProps {
   title?: string;
   movies: MovieCardProps[];
@@ -16,21 +17,25 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   movies,
   className,
 }) => {
-  const [showPopup, setShowPopup] = React.useState(true);
   const [currentMovie, setCurrentMovie] = React.useState<MovieCardProps>();
-  const openRating = (movie: MovieCardProps) => () => {
-    setShowPopup(!showPopup);
-    setCurrentMovie(movie);
+  const [showRating, setShowRating] = React.useState(false);
+
+  const closeRating = () => {
+    setShowRating(!showRating);
   };
+  const openRating = (movie: MovieCardProps) => () => {
+    setCurrentMovie(movie);
+    setShowRating(!showRating);
+  };
+
   return (
-    <div>
-      {showPopup && (
-        <PopUp className="left-1/4 top-1/4">
-          <div>
-            <p>{currentMovie?.title}</p>
-          </div>
-        </PopUp>
-      )}
+    <div className="relative">
+      <PopUp open={showRating} onClose={closeRating}>
+        <div className="flex flex-col justify-center items-center">
+          <p>{currentMovie?.title}</p>
+          <Stars />
+        </div>
+      </PopUp>
       {title && (
         <div>
           <h2 className=" mx-4 text-2xl font-bold mb-4">{title}</h2>
