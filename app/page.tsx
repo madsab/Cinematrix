@@ -3,29 +3,29 @@
 import {signOut} from 'firebase/auth';
 import {auth} from '@/app/firebase/config'; // db can be imported from here
 import {useRouter} from 'next/navigation';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [mail, setMail] = useState<string>('');
+  const [mail, setMail] = useState('');
+  const [notLoggedIn, setNotLoggedIn] = useState(false); //false when unknown
 
   const router = useRouter();
+  useEffect(() => {
+    if (notLoggedIn) {
+      router.push("/signin");
+    }
+  })
 
   auth.onAuthStateChanged((user) => {
+    setLoading(false);
+
     if (user) {
       console.log(user.uid);
-      setLoading(false);
       setMail(user.email as string);
-    }
-    else {
-      try {
-        router.push("/signin");
-      } catch (error) {
-        /*
-        Fant ikke ut hvordan jeg stopper router fra å
-        lage en error, alt fungerer... håper jeg :o
-        */
-      }
+      setNotLoggedIn(false);
+    } else {
+      setNotLoggedIn(true);
     }
   });
   
@@ -33,7 +33,7 @@ export default function Home() {
     <div>
       {loading ? <div>Loading</div> : 
       <div>
-        <div>Logged in with mail: {mail}</div>
+        <div>{mail}</div>
           <button onClick={() => signOut(auth)}>Logout</button>
         </div>
       }

@@ -7,17 +7,60 @@ import { auth } from '@/app/firebase/config';
 export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const initialState = {
+    passwordErrorExist: false,
+    emailErrorExist: false,
+    combinedErrorExist: false,
+    passwordError: '',
+    emailError: '',
+    combinedError: ''
+  }
+  const [errorHandler, setErrorStates] = useState(initialState);
 
   const router = useRouter();
-
+  const passwordMinLen = 8;
   const signup = () => {
+    //Remove all previous errors
+    setErrorStates({...initialState});
+    console.log(initialState);
+
+    //Check password for errors
+    if (password.length < passwordMinLen) {
+        setErrorStates({...errorHandler, 
+            passwordErrorExist: true,
+            passwordError: 'Password has to be at least ' + passwordMinLen + ' characters'}
+        );
+        console.log(errorHandler);
+        return;
+    }
+
+    //Check email for erros
+    if (!email.includes('@')) {
+        setErrorStates({...errorHandler, 
+            emailErrorExist: true,
+            emailError: 'Email has to contain @'}
+        );
+        console.log(errorHandler);
+
+        return;
+    }
+
+
     createUserWithEmailAndPassword(auth, email, password).then(
         () => router.push('/')
     ).catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error(errorCode, errorMessage);
-    })};
+
+        //Account creation failed, notify user something is wrong
+        setErrorStates({...errorHandler, 
+            combinedErrorExist: true,
+            combinedError: 'Error signing up'}
+        );
+    }
+    
+    )};
 
   return (
     <>
@@ -41,6 +84,9 @@ export default function Signup() {
                             required                    
                         />
                     </div>
+                    
+                    {!errorHandler.emailErrorExist ? <></> : <div>{errorHandler.emailError}</div>}
+                    
                     <div className="w-full flex items-center justify-center">
                         <input 
                             className="bg-white rounded-md text-black px-2 py-2" 
@@ -53,7 +99,13 @@ export default function Signup() {
                             required
                         />
                     </div>
+
+                    {!errorHandler.passwordErrorExist ? <></> : <div>{errorHandler.passwordError}</div>}
+
+                    {!errorHandler.combinedErrorExist ? <></> : <div>{errorHandler.combinedError}</div>}
+
                 </div>
+                
                 <div className="w-full flex items-center justify-center">
                     <button
                         className="bg-gradient-to-tr from-fire to-salmon px-5 py-2 rounded-md text-white hover:underline hover:from-fire hover:to-fire transition duration-150 ease-in-out"
