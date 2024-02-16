@@ -72,7 +72,7 @@ const dummyMovies: MovieCardProps[] = [
       {
         id: 3,
         title:
-          "kjhkjhkljh khl ljk lk gjkh gjh gjhgjhghkjghjk jgkhhjgjhkg jkghjgjkhgkhjg",
+          "kjhkjhkljh khl ljk lk gjkh gjh gj",
         description:
           "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
         image: Annika,
@@ -89,9 +89,9 @@ const Profile = () => {
             </div>
             */}
             <div className=" ml-20 w-4/5" >
-                    <MovieScrollArea title="Movies you've seen:" movies={dummyMovies} />
-
                     <MovieScrollArea title="Your ratings:" movies={dummyMovies} />
+
+                    <MovieScrollArea title="Movies you've seen:" movies={dummyMovies} />
             </div>
         </div>
 
