@@ -1,7 +1,58 @@
 .page {
   display: flex;
+  margin: 0 auto;
+  background: linear-gradient(
+    to right,
+    #0000 0%,
+    #801336 140%
+  ); /* Dark background */
+  color: #fff; /* Light text */
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  align-items: flex-start;
+  min-height: 90vh; /* Make the div at least as tall as the viewport */
+  width: 100vw;
+}
+
+.movielayout {
+  display: flex;
+  width: 90vw;
+}
+
+.movie-image {
+  max-width: 400px; /* Smaller image */
+  height: 150px;
+  margin-right: 5px; /* Space between image and text */
+  border-radius: 25px;
+  margin-left: 70px;
+  margin-top: 70px;
+  margin-right: 15px;
+}
+
+.movieinfo {
+  flex: 2.5;
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+  justify-content: flex-start;
+  padding: 5px;
+  padding-left: 20px;
+}
+
+.title {
+  font-size: 36px;
+  margin-bottom: 15px;
+  margin-top: 60px;
+  border-bottom: 1px solid #fff;
+}
+
+.description {
+  padding-top: 30px;
+}
+
+.actors {
+  padding-top: 30px;
+}
+
+.rating {
+  padding-top: 30px;
 }
