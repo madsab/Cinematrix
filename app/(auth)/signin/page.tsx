@@ -7,17 +7,25 @@ import {auth} from '@/app/firebase/config';
 export default function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
+
+  function errorDiv(error: String) {
+    return <div className="w-full flex items-center justify-center"><p className="text-fire">{error}</p></div>;
+}
+
 
   const signin = () => {
     signInWithEmailAndPassword(auth, email, password).then(
         () => {
+            setError('');
             router.push('/');
         }
     ).catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error(errorCode, errorMessage);
+        setError('Error logging in, check mail and password')
     });
   }
 
@@ -33,8 +41,8 @@ export default function Signin() {
                     <div className="flex w-full flex-wrap space-y-4">
                         <div className="w-full flex items-center justify-center">
                             <input 
-                                className="bg-white rounded-md text-black px-2 py-2"
-                                id="email"
+                            className={(error != '' ? "bg-fire text-white" : "bg-white text-black") + " rounded-md px-2 py-2"}
+                            id="email"
                                 name="email"
                                 type="email"
                                 placeholder="Email"
@@ -45,8 +53,8 @@ export default function Signin() {
                         </div>
                         <div className="w-full flex items-center justify-center">
                             <input 
-                                className="bg-white rounded-md text-black px-2 py-2" 
-                                id="password"
+                            className={(error != '' ? "bg-fire text-white" : "bg-white text-black") + " rounded-md px-2 py-2"}
+                            id="password"
                                 name="password"
                                 type="password"
                                 placeholder="Password"
@@ -55,6 +63,8 @@ export default function Signin() {
                                 required
                             />
                         </div>
+                        {errorDiv(error)}
+
                     </div>
                     <div className="w-full flex items-center justify-center">
                         <button
