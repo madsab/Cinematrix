@@ -10,6 +10,7 @@ export interface MovieCardProps {
   description: string;
   image: StaticImageData;
   rating: 1 | 2 | 3 | 4 | 5;
+  actors?: string[];
   openRating?: () => void;
 }
 
