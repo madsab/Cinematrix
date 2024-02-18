@@ -10,7 +10,7 @@ export default function AuthLayout({
 }>) {
   return (
     <>
-      <div className="mx-6">{children}</div>
+      {children}
     </>
   );
 }
