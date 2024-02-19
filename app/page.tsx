@@ -1,7 +1,7 @@
 "use client";
 
 import MovieScrollArea from "./components/MovieScrollArea";
-import { signOut } from "firebase/auth";
+import { Auth, signOut } from "firebase/auth";
 import { auth } from "@/firebase/config"; // db can be imported from here
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
