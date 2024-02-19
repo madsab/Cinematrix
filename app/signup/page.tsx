@@ -12,12 +12,31 @@ export default function Signup() {
 
   const signup = () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then(() => router.push("/"))
+      .then(() => {
+        const userId = auth.currentUser?.uid;
+        createUserWithCustomProps(userId);
+
+        router.push("/");
+      })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error(errorCode, errorMessage);
       });
+  };
+
+  const createUserWithCustomProps = (userId: string | undefined) => {
+    try {
+      fetch("/api/users/signup", {
+        method: "POST",
+        body: JSON.stringify({ userId: userId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.error("Error in creating user with custom properties: ", error);
+    }
   };
 
   return (
