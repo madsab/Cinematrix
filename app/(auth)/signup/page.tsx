@@ -72,7 +72,7 @@ export default function Signup() {
                 <div className="flex w-full flex-wrap space-y-4">
                     <div className="w-full flex items-center justify-center">
                         <input 
-                            className={(errorHandler.emailError.concat(errorHandler.combinedError) != '' ? "bg-fire text-white" : "bg-white text-black") + " rounded-md px-2 py-2"}
+                            className={(errorHandler.emailError.concat(errorHandler.combinedError) != '' && "border-2 border-fire") + " bg-white text-black rounded-md px-2 py-2"}
                             id="email"
                             name="email"
                             type="email"
@@ -85,7 +85,7 @@ export default function Signup() {
                     {errorDiv(errorHandler.emailError)}
                     <div className="w-full flex items-center justify-center">
                         <input 
-                            className={(errorHandler.passwordError.concat(errorHandler.combinedError) != ''? "bg-fire text-white" : "bg-white text-black") + " rounded-md px-2 py-2"}
+                            className={(errorHandler.passwordError.concat(errorHandler.combinedError) != '' && "border-2 border-fire") + " bg-white text-black rounded-md px-2 py-2"}
                             id="password"
                             name="password"
                             type="password"

@@ -25,7 +25,7 @@ export default function Signin() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.error(errorCode, errorMessage);
-        setError('Error logging in, check mail and password')
+        setError('Wrong email or password');
     });
   }
 
@@ -41,7 +41,7 @@ export default function Signin() {
                     <div className="flex w-full flex-wrap space-y-4">
                         <div className="w-full flex items-center justify-center">
                             <input 
-                            className={(error != '' ? "bg-fire text-white" : "bg-white text-black") + " rounded-md px-2 py-2"}
+                            className={(error != '' && "border-2 border-fire") + " bg-white text-black rounded-md px-2 py-2"}
                             id="email"
                                 name="email"
                                 type="email"
@@ -53,7 +53,7 @@ export default function Signin() {
                         </div>
                         <div className="w-full flex items-center justify-center">
                             <input 
-                            className={(error != '' ? "bg-fire text-white" : "bg-white text-black") + " rounded-md px-2 py-2"}
+                            className={(error != '' && "border-2 border-fire") + " bg-white text-black rounded-md px-2 py-2"}
                             id="password"
                                 name="password"
                                 type="password"
