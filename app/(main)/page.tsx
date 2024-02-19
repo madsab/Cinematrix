@@ -1,11 +1,13 @@
 "use client";
-import Annika from "./assets/images/Anikka.jpeg";
-import { MovieCardProps } from "./components/organisms/MovieCard";
-import MovieScrollArea from "./components/MovieScrollArea";
+import Annika from "../assets/images/Anikka.jpeg";
+import { MovieCardProps } from "../components/organisms/MovieCard";
+import MovieScrollArea from "../components/MovieScrollArea";
 import { signOut } from "firebase/auth";
 import { auth } from "@/app/firebase/config"; // db can be imported from here
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import { User as FirebaseUser } from "firebase/auth";
+
 
 const dummyMovies: MovieCardProps[] = [
   {
@@ -82,24 +84,24 @@ const dummyMovies: MovieCardProps[] = [
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [mail, setMail] = useState<string>("");
+  const [user, setUser] = useState<FirebaseUser | null>(null)
+  const [notLoggedIn, setNotLoggedIn] = useState(false); //false when unknown
 
-  const router = useRouter();
+  useEffect(() => {
+    if (notLoggedIn) {
+      redirect("/signin");
+    }
+  })
 
   auth.onAuthStateChanged((user) => {
+    setLoading(false);
+
     if (user) {
       console.log(user.uid);
-      setLoading(false);
-      setMail(user.email as string);
+      setUser(user);
+      setNotLoggedIn(false);
     } else {
-      try {
-        router.push("/signin");
-      } catch (error) {
-        /*
-        Fant ikke ut hvordan jeg stopper router fra å
-        lage en error, alt fungerer... håper jeg :o
-        */
-      }
+      setNotLoggedIn(true);
     }
   });
 
@@ -112,7 +114,7 @@ export default function Home() {
           <section className="mt-4">
             <MovieScrollArea title="For You" movies={dummyMovies} />
           </section>
-          <div>Logged in with mail: {mail}</div>
+          <div>{user?.email}</div>
           <button onClick={() => signOut(auth)}>Logout</button>
         </div>
       )}
