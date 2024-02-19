@@ -1,19 +1,16 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { FC, useState } from "react";
 import cn from "classnames";
 import { useRouter } from "next/navigation";
+import { Movie } from "@/app/types/Movie";
 
 export interface MovieCardProps {
-  id: number;
-  title: string;
-  description: string;
-  image: StaticImageData;
-  rating: 1 | 2 | 3 | 4 | 5;
+  movie: Movie;
   openRating?: () => void;
 }
 
-const MovieCard: FC<MovieCardProps> = ({ openRating, ...props }) => {
+const MovieCard: FC<MovieCardProps> = ({ openRating, movie }) => {
   const router = useRouter();
   const [seen, setSeen] = useState(false);
   const eye = seen ? "tabler:eye" : "tabler:eye-off";
@@ -24,9 +21,9 @@ const MovieCard: FC<MovieCardProps> = ({ openRating, ...props }) => {
   return (
     <div className="flex flex-col items-center w-[150px] space-y-2 ">
       <Image
-        onClick={() => router.push(`/movies/${props.id}`)}
-        src={props.image}
-        alt={props.title}
+        onClick={() => router.push(`/movies/${movie.imdbid}`)}
+        src={movie.image}
+        alt={movie.title}
         className="rounded-md hover:cursor-pointer hover:scale-105 transition-transform"
         width={150}
         height={150}
@@ -46,11 +43,11 @@ const MovieCard: FC<MovieCardProps> = ({ openRating, ...props }) => {
           className="flex items-center space-x-1 hover:cursor-pointer hover:bg-slate-600 px-1 rounded-md"
           onClick={openRating}
         >
-          <p className="text-sm ">{props.rating}</p>
+          <p className="text-sm ">{movie.rating}</p>
           <Icon icon={"tabler:star"} className=" text-yellow-200" />
         </div>
       </div>
-      <p className=" text-center text-wrap italic">{props.title}</p>
+      <p className=" text-center text-wrap italic">{movie.title}</p>
     </div>
   );
 };

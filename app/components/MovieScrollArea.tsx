@@ -6,9 +6,10 @@ import cn from "classnames";
 import { Separator } from "./atoms/Seperator";
 import PopUp from "./organisms/PopUp";
 import Stars from "./atoms/Stars";
+import { Movie } from "../types/Movie";
 interface MovieScrollAreaProps {
   title?: string;
-  movies: MovieCardProps[];
+  movies: Movie[];
   className?: string;
 }
 
@@ -17,13 +18,13 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   movies,
   className,
 }) => {
-  const [currentMovie, setCurrentMovie] = React.useState<MovieCardProps>();
+  const [currentMovie, setCurrentMovie] = React.useState<Movie>();
   const [showRating, setShowRating] = React.useState(false);
 
   const closeRating = () => {
     setShowRating(!showRating);
   };
-  const openRating = (movie: MovieCardProps) => () => {
+  const openRating = (movie: Movie) => () => {
     setCurrentMovie(movie);
     setShowRating(!showRating);
   };
@@ -49,7 +50,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
               <MovieCard
                 openRating={openRating(movie)}
                 key={index}
-                {...movie}
+                movie={movie}
               />
             ))}
           </div>
