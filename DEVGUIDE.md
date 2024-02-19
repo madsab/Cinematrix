@@ -3,7 +3,7 @@
 ## Running the application
 1. Install dependencies using: ``npm i``
 2. Run the application using ``npm run dev``
-3. Close the application by clickng **CTRL + C** then typing ``Y`` _(for yes)_
+3. Close the application by clicking **CTRL + C** then typing ``Y`` _(for yes)_
 
 ## How to start working on an issue
 1. Make sure the issue is created, note down the ID of the issue
@@ -21,19 +21,41 @@ git checkout -b 22-devguide
 ```
 4. Then you can begin to work on the issue, you should make it a habit to regularly push your changes to your branch:
 ```bash
-#Stage changes
+# Stage changes
 git add --all 
 
-#Add a commit message
+# Add a commit message
 git commit -m "Some description of what was done"
 
-#Push the changes
+# Push the changes
 git push
 
-#If this is the first time you push changes to this branch, you may get an error and 
+# If this is the first time #you push changes to this #branch, you may get an error like 
+# "The current branch ____ has to upstream branch..."
+# If you get this error, do this:
+git push --set-upstream origin [Branchname]
 ```
+5. When you are done, push your last changes. Then merge with main and resolve conflicts
+```bash
+# Going to main branch
+git checkout main
 
+# Get the last changes done on main
+git pull
 
+# Go back to your branch
+git checkout [Branchname]
+
+# Merge with main
+git merge main
+```
+6. If you got conflicts, resolve them. Then you have to push the changes when merging with main.
+```bash
+git add --all 
+git commit -m "Merged with main"
+git push
+```
+7. After this is done, you can create your merge request on gitlab.
 
 ## Review merge requests
 How to review merge requests:
