@@ -5,8 +5,8 @@ import { NextApiResponse } from "next";
 export async function POST(req: Request, res: NextApiResponse) {
     const { userId } = await req.json()
     await setDoc(doc(db, "users", userId), {
-        seenMovies: [],
-        ratedMovies: []
+        moviesWatched: [],
+        moviesRated: []
 
     })
     return res.status(200)
