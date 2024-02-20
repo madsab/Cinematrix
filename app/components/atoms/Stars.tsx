@@ -26,7 +26,7 @@ const Stars: FC<StarsProps> = ({ rating }) => {
 
   return (
     <div className="flex items-center hover:cursor-pointer">
-      {[...Array(5)].map((_, index) => (
+      {[...Array(10)].map((_, index) => (
         <Icon
           key={index}
           icon={"tabler:star"}

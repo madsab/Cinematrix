@@ -32,9 +32,9 @@ const MovieCard: FC<MovieCardProps> = ({
   }, [alreadyWatched]);
 
   const saveToDb = async (method: string) => {
-    fetch(`/api/users/${userId}/movies`, {
+    await fetch(`/api/users/${userId}/movies`, {
       method: method,
-      body: JSON.stringify({ movieImdbId: movie.imdbid }),
+      body: JSON.stringify({movieImdbId: movie.imdbid}),
     });
   };
 
