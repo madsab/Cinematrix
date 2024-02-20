@@ -1,13 +1,24 @@
 import { db } from "@/firebase/config";
-import { arrayRemove, arrayUnion, collection, doc, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
+import { QueryFieldFilterConstraint, arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, QueryLimitConstraint } from "firebase/firestore";
 import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 
 
-export async function GET() {
+export async function GET(req: NextRequest, params: {params: { id: string }}) {
+    const { filter = null, limit = null } = await req.json()
+    const res = collection(db, "users", params.params.id)
+    let q = null
+
     try {
-        const res = collection(db, "movies")
-        const q = query(res, where("year", ">=", 2010), limit(20))
+        if (filter && limit){
+                q = query(res, filter as QueryFieldFilterConstraint , limit as QueryLimitConstraint)
+        } else if (filter && !limit) {
+                q = query(res, filter as QueryFieldFilterConstraint)
+        } else if (!filter && limit){
+                q = query(res, limit as QueryLimitConstraint)
+        } else {
+                q = query(res)
+        }
         const data = await getDocs(q)
         const movies = data.docs.map((doc) => {
             const movieData = doc.data();
@@ -16,8 +27,9 @@ export async function GET() {
         });
         return new Response(JSON.stringify(movies));
     } catch (error) {
-        return new Response("Error", { status: 500 })
+        return new Response("Error", {status: 500})
     }
+
 }
 
 export async function POST(req: NextRequest, params: {params: { id: string }}, res: NextApiResponse) {
