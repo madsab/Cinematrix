@@ -39,7 +39,7 @@ const MovieCard: FC<MovieCardProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center w-[150px] space-y-2 ">
+    <div className="flex flex-col items-center w-[150px] h-fit space-y-2 ">
       <Image
         onClick={() => router.push(`/movies/${movie.imdbid}`)}
         src={movie.image}
