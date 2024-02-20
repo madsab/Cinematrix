@@ -1,33 +1,35 @@
 import { db } from "@/firebase/config";
-import { QueryFieldFilterConstraint, arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, QueryLimitConstraint } from "firebase/firestore";
+import { QueryFieldFilterConstraint, arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, QueryLimitConstraint, where, DocumentData, getDoc } from "firebase/firestore";
 import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 
-
 export async function GET(req: NextRequest, params: {params: { id: string }}) {
-    const { filter = null, limit = null } = await req.json()
-    const res = collection(db, "users", params.params.id)
-    let q = null
-
-    try {
-        if (filter && limit){
-                q = query(res, filter as QueryFieldFilterConstraint , limit as QueryLimitConstraint)
-        } else if (filter && !limit) {
-                q = query(res, filter as QueryFieldFilterConstraint)
-        } else if (!filter && limit){
-                q = query(res, limit as QueryLimitConstraint)
-        } else {
-                q = query(res)
+    const type = req.nextUrl.searchParams.get("type")
+    const userMoviesDB = doc(db, "users", params.params.id)
+    const movieDB = collection(db, "movies")
+    const watchedMovies: any[] = []
+    try{
+        const moviesWatched = (await getDoc(userMoviesDB)).get("moviesWatched") as []
+        if (type === "id") {
+            return new Response(JSON.stringify(moviesWatched))
         }
-        const data = await getDocs(q)
+        //Had to add moviesWatched to an array to be able to use it in next query, or else moviesWatched would be empty.
+        moviesWatched.forEach((movie) => {
+            watchedMovies.push(movie)
+        })
+        const data = await getDocs(query(movieDB, where("imdbid", "in", watchedMovies)))
+
         const movies = data.docs.map((doc) => {
             const movieData = doc.data();
             movieData.id = doc.id;
             return movieData;
         });
-        return new Response(JSON.stringify(movies));
+        return new Response(JSON.stringify(movies))
+
+
     } catch (error) {
-        return new Response("Error", {status: 500})
+
+        return new Response("Error", {status: 200})
     }
 
 }
