@@ -1,7 +1,7 @@
 "use client";
-import Annika from "../assets/images/Anikka.jpeg";
-import { MovieCardProps } from "../components/organisms/MovieCard";
-import MovieScrollArea from "../components/MovieScrollArea";
+import Annika from "../../assets/images/Anikka.jpeg";
+import { MovieCardProps } from "../../components/organisms/MovieCard";
+import MovieScrollArea from "../../components/MovieScrollArea";
 import { auth } from "@/app/firebase/config"; // db can be imported from here
 import { useState } from "react";
 
