@@ -34,7 +34,7 @@ const MovieCard: FC<MovieCardProps> = ({
   const saveToDb = async (method: string) => {
     await fetch(`/api/users/${userId}/movies`, {
       method: method,
-      body: JSON.stringify({movieImdbId: movie.imdbid}),
+      body: JSON.stringify({ movieImdbId: movie.imdbid }),
     });
   };
 
@@ -56,11 +56,11 @@ const MovieCard: FC<MovieCardProps> = ({
           height={20}
           className={cn(
             "hover:cursor-pointer ease-linear duration-100 rounded-md",
-            isWatched ? "bg-slate-600 text-black" : "text-slate-600"
+            isWatched ? "bg-white text-black" : "text-white"
           )}
         />
         <div
-          className="flex items-center space-x-1 hover:cursor-pointer hover:bg-slate-600 px-1 rounded-md"
+          className="flex items-center space-x-1 hover:cursor-pointer hover:bg-white px-1 rounded-md"
           onClick={openRating}
         >
           <p className="text-sm ">{movie.rating}</p>
