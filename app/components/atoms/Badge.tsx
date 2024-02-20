@@ -1,24 +1,30 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import "../atoms/Badge.css";
 import { useState } from "react";
+import cn from "classnames";
 
 const Badge = (): React.ReactNode => {
-  const [clicked, setClicked] = useState(false);
+  const [isWatched, setisWatched] = useState(false);
   const handleClick = () => {
-    setClicked(!clicked);
+    setisWatched(!isWatched);
   };
   return (
     <button
-      className={`hasSeen ${clicked ? "clicked" : ""}`}
+      className={cn(
+        "flex items-center space-x-2 border-[1px] px-9 py-1 rounded-full",
+        isWatched
+          ? "bg-green-100 border-green-400 text-green-500"
+          : "bg-red-100 border-red-400 text-red-500"
+      )}
       onClick={handleClick}
     >
       <Icon
-        icon={clicked ? "tabler:eye-off" : "tabler:eye"}
-        color={clicked ? "#AD480F" : "#37A81B"}
-        className="icon"
+        icon={isWatched ? "tabler:eye" : "tabler:eye-off"}
+        className={cn(isWatched ? "text-green-500" : "text-red-500")}
       />
       <span>
-        {clicked ? "Remove from watched movies" : "Add to watched movies"}
+        {isWatched
+          ? "You have seen this movie"
+          : "You have not seen this movie"}
       </span>
     </button>
   );
