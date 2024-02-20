@@ -2,11 +2,12 @@
 
 import MovieScrollArea from "../components/MovieScrollArea";
 import { signOut } from "firebase/auth";
-import { auth } from "@/app/firebase/config"; // db can be imported from here
+
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { User as FirebaseUser } from "firebase/auth";
 import { Movie } from "../types/Movie";
+import { auth } from "@/firebase/config";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
