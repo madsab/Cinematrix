@@ -1,9 +1,9 @@
 "use client";
 import MovieScrollArea from "@/app/components/MovieScrollArea";
-import Annika from "../assets/images/Anikka.jpeg";
-import { useEffect, useState } from "react";
-import { auth } from "@/firebase/config";
 import { Movie } from "@/app/types/Movie";
+import { auth } from "@/firebase/config";
+// db can be imported from here
+import { useEffect, useState } from "react";
 
 const Profile = () => {
   const [moviesWatched, setMoviesWatched] = useState<Movie[]>([]);
