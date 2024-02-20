@@ -1,21 +1,41 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import cn from "classnames";
 import { useRouter } from "next/navigation";
 import { Movie } from "@/app/types/Movie";
+import { auth } from "@/firebase/config";
 
 export interface MovieCardProps {
   movie: Movie;
+  alreadyWatched?: boolean;
   openRating?: () => void;
 }
 
-const MovieCard: FC<MovieCardProps> = ({ openRating, movie }) => {
+const MovieCard: FC<MovieCardProps> = ({
+  openRating,
+  movie,
+  alreadyWatched = false,
+}) => {
   const router = useRouter();
-  const [seen, setSeen] = useState(false);
-  const eye = seen ? "tabler:eye" : "tabler:eye-off";
-  const markAsSeen = () => {
-    setSeen(!seen);
+  const userId = auth.currentUser?.uid;
+  const [isWatched, setWatched] = useState(false);
+  const eye = isWatched ? "tabler:eye" : "tabler:eye-off";
+  const markAsWatched = () => {
+    let method = !isWatched ? "POST" : "DELETE";
+    saveToDb(method);
+    setWatched(!isWatched);
+  };
+
+  useEffect(() => {
+    alreadyWatched && setWatched(true);
+  }, [alreadyWatched]);
+
+  const saveToDb = async (method: string) => {
+    fetch(`/api/users/${userId}/movies`, {
+      method: method,
+      body: JSON.stringify({ movieImdbId: movie.imdbid }),
+    });
   };
 
   return (
@@ -30,13 +50,13 @@ const MovieCard: FC<MovieCardProps> = ({ openRating, movie }) => {
       />
       <div className="w-full flex items-center justify-between px-3">
         <Icon
-          onClick={() => markAsSeen()}
+          onClick={() => markAsWatched()}
           icon={eye}
           width={20}
           height={20}
           className={cn(
             "hover:cursor-pointer ease-linear duration-100 rounded-md",
-            seen ? "bg-slate-600 text-black" : "text-slate-600"
+            isWatched ? "bg-slate-600 text-black" : "text-slate-600"
           )}
         />
         <div
