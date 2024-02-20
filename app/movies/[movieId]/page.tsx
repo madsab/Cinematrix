@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Annika from "../../assets/images/Anikka.jpeg";
 import { MovieCardProps } from "../../components/organisms/MovieCard";
+import Button from "../../components/atoms/Moviebutton";
 
 const dummyMovies: MovieCardProps[] = [
   {
@@ -29,7 +30,7 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row justify-center items-start bg-gradient-to-r from-black to-custom-red text-white overflow-hidden shadow-lg p-5 min-h-screen w-full">
+    <div className="flex flex-col md:flex-row justify-center items-start bg-gradient-to-r from-black to-[#801336] text-white overflow-hidden shadow-lg p-5 min-h-screen w-full">
       <div className="flex justify-center md:justify-start md:items-center mb-4 md:mb-0">
         {movie.image && (
           <img
@@ -52,6 +53,7 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
         <p>
           <span className="font-bold">Rating:</span> {movie.rating}/5
         </p>
+        <Button />
       </div>
     </div>
   );
