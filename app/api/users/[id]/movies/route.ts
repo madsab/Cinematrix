@@ -1,5 +1,6 @@
 import { db } from "@/firebase/config";
-import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
+import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 
 
@@ -19,6 +20,21 @@ export async function GET() {
     }
 }
 
-export async function POST(req: NextRequest) {
-    return new Response(req.body)
+export async function POST(req: NextRequest, params: {params: { id: string }}, res: NextApiResponse) {
+    const { movieImdbId  } = await req.json()
+    const userDoc = doc(db, "users", params.params.id)
+    await updateDoc(userDoc, {
+        moviesWatched: arrayUnion(movieImdbId),
+    })
+    return res.status(201)
 }
+
+export async function DELETE(req: NextRequest, params: {params: { id: string }}, res: NextApiResponse) {
+    const { movieImdbId  } = await req.json()
+    const userDoc = doc(db, "users", params.params.id)
+    await updateDoc(userDoc, {
+        moviesWatched: arrayRemove(movieImdbId),
+    })
+    return res.status(200)
+}
+
