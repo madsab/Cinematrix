@@ -10,7 +10,7 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
     const watchedMovies: any[] = []
     try{
         const moviesWatched = (await getDoc(userMoviesDB)).get("moviesWatched") as []
-        if (type === "id") {
+        if (type === "MoviesWatchedID") {
             return new Response(JSON.stringify(moviesWatched))
         }
         //Had to add moviesWatched to an array to be able to use it in next query, or else moviesWatched would be empty.
@@ -35,11 +35,24 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
 }
 
 export async function POST(req: NextRequest, params: {params: { id: string }}, res: NextApiResponse) {
-    const { movieImdbId  } = await req.json()
+    const type = req.nextUrl.searchParams.get("type")
+
     const userDoc = doc(db, "users", params.params.id)
-    await updateDoc(userDoc, {
-        moviesWatched: arrayUnion(movieImdbId),
-    })
+    if (type === "MovieWatched") {
+        const { movieImdbId  } = await req.json()
+        await updateDoc(userDoc, {
+            moviesWatched: arrayUnion(movieImdbId),
+        })
+    }
+
+    if (type === "MovieRatings") {
+        let map: any = new Map();
+        const { movieImdbId, rating } = await req.json()
+        map.set(movieImdbId, rating)
+        await updateDoc(userDoc, {
+            moviesRated: arrayUnion(map),
+        })
+    }
     return res.status(201)
 }
 

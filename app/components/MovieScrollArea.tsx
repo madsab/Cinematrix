@@ -40,7 +40,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
     });
 
     const fecthUserWacthedMovies = async () => {
-      const res = await fetch(`/api/users/${userId}/movies?type=id`, {
+      const res = await fetch(`/api/users/${userId}/movies?type=MoviesWatchedID`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
