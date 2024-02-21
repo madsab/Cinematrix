@@ -6,9 +6,11 @@ import cn from "classnames";
 import { Separator } from "./atoms/Seperator";
 import PopUp from "./organisms/PopUp";
 import Stars from "./atoms/Stars";
+import { Movie } from "../types/Movie";
+import { auth } from "@/firebase/config";
 interface MovieScrollAreaProps {
   title?: string;
-  movies: MovieCardProps[];
+  movies: Movie[];
   className?: string;
 }
 
@@ -17,16 +19,38 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   movies,
   className,
 }) => {
-  const [currentMovie, setCurrentMovie] = React.useState<MovieCardProps>();
+  const [currentMovie, setCurrentMovie] = React.useState<Movie>();
   const [showRating, setShowRating] = React.useState(false);
+  const [userId, setUserId] = React.useState<string | null>(null);
+  const [userMovieIDs, setUserMoviesIDs] = React.useState<string[]>();
 
   const closeRating = () => {
     setShowRating(!showRating);
   };
-  const openRating = (movie: MovieCardProps) => () => {
+  const openRating = (movie: Movie) => () => {
     setCurrentMovie(movie);
     setShowRating(!showRating);
   };
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserId(user.uid);
+      }
+    });
+
+    const fecthUserWacthedMovies = async () => {
+      const res = await fetch(`/api/users/${userId}/movies?type=id`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      setUserMoviesIDs(data);
+    };
+    fecthUserWacthedMovies();
+  }, [userId]);
 
   return (
     <div className="relative">
@@ -49,7 +73,10 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
               <MovieCard
                 openRating={openRating(movie)}
                 key={index}
-                {...movie}
+                movie={movie}
+                alreadyWatched={
+                  userMovieIDs ? userMovieIDs?.includes(movie.imdbid) : false
+                }
               />
             ))}
           </div>

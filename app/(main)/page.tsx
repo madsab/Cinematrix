@@ -1,97 +1,35 @@
 "use client";
-import Annika from "../assets/images/Anikka.jpeg";
-import { MovieCardProps } from "../components/organisms/MovieCard";
+
 import MovieScrollArea from "../components/MovieScrollArea";
 import { signOut } from "firebase/auth";
-import { auth } from "@/app/firebase/config"; // db can be imported from here
+
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { User as FirebaseUser } from "firebase/auth";
-
-
-const dummyMovies: MovieCardProps[] = [
-  {
-    id: 1,
-    title: "The Shawshank Redemption",
-    description: "Two imprisoned",
-    image: Annika,
-    rating: 4,
-  },
-  {
-    id: 2,
-    title: "The Godfather",
-    description:
-      "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
-    image: Annika,
-    rating: 2,
-  },
-  {
-    id: 3,
-    title: "The Dark Knight",
-    description:
-      "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-    image: Annika,
-    rating: 1,
-  },
-  {
-    id: 1,
-    title: "The Shawshank Redemption",
-    description: "Two imprisoned",
-    image: Annika,
-    rating: 3,
-  },
-  {
-    id: 2,
-    title: "The Godfather",
-    description:
-      "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
-    image: Annika,
-    rating: 3,
-  },
-  {
-    id: 3,
-    title: "The Dark Knight",
-    description:
-      "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-    image: Annika,
-    rating: 4,
-  },
-  {
-    id: 1,
-    title: "The Shawshank Redemption",
-    description: "Two imprisoned",
-    image: Annika,
-    rating: 4,
-  },
-  {
-    id: 2,
-    title: "The Godfather",
-    description:
-      "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
-    image: Annika,
-    rating: 2,
-  },
-  {
-    id: 3,
-    title:
-      "kjhkjhkljh khl ljk lk gjkh gjh gjhgjhghkjghjk jgkhhjgjhkg jkghjgjkhgkhjg",
-    description:
-      "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-    image: Annika,
-    rating: 1,
-  },
-];
+import { Movie } from "../types/Movie";
+import { auth } from "@/firebase/config";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<FirebaseUser | null>(null)
-  const [notLoggedIn, setNotLoggedIn] = useState(false); //false when unknown
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [notLoggedIn, setNotLoggedIn] = useState(false);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
+    const fetchMovies = async () => {
+      const res = await fetch("/api/movies", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setMovies(data);
+    };
+
     if (notLoggedIn) {
       redirect("/signin");
+    } else {
+      fetchMovies();
     }
-  })
+  }, [notLoggedIn]);
 
   auth.onAuthStateChanged((user) => {
     setLoading(false);
@@ -112,7 +50,7 @@ export default function Home() {
       ) : (
         <div>
           <section className="mt-4">
-            <MovieScrollArea title="For You" movies={dummyMovies} />
+            <MovieScrollArea title="For You" movies={movies} />
           </section>
           <div>{user?.email}</div>
           <button onClick={() => signOut(auth)}>Logout</button>
