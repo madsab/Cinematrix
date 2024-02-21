@@ -31,26 +31,8 @@ npm run dev
 
 Then open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-## Usage Overview
-
-### Creating a user
-After opening the application, you will be sent to the login page. 
-Here you can either choose to create a user, or login using an existing one.
-
-![Login](/docs/login.png)
-
-
-### Marking movies as seen
-After logging in, you will be presented with a front page containing some movies. You can mark these as seen using the eye symbol at the bottom left of each movie card.
-
-![Moviecard](/docs/moviecard.png)
-
-
-### Your profile
-By clicking on the profile icon in the upper right, you can view the movies you have marked as seen.
-
 ## Built with
-- [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+- [Next.js](https://nextjs.org/) bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 - [Typescript](https://www.typescriptlang.org/) for the frontend and backend
 - [TailwindCSS](https://tailwindcss.com/) to style the application
 - [Firebase](https://firebase.google.com/) to host the database for this application
