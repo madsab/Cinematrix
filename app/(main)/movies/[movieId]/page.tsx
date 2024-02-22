@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Annika from "../../assets/images/Anikka.jpeg";
-import { MovieCardProps } from "../../components/organisms/MovieCard";
-import MovieButton from "../../components/atoms/Moviebutton";
+import Annika from "../../../assets/images/Anikka.jpeg";
+import { MovieCardProps } from "../../../components/organisms/MovieCard";
+import MovieButton from "../../../components/atoms/Moviebutton";
 import Stars from "@/app/components/atoms/Stars";
 import PopUp from "@/app/components/organisms/PopUp";
 import Button from "@/app/components/atoms/Button";
@@ -28,12 +28,12 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
     );
     setMovie(foundMovie || null);
   }, [params.movieId]);
-  const closePopup = ()=> {
+  const closePopup = () => {
     setOpen(false);
-  }
-  const openPopup =()=> {
+  };
+  const openPopup = () => {
     setOpen(true);
-  }
+  };
 
   if (!movie) {
     return <div className="text-white">Movie not found</div>;
@@ -51,7 +51,7 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
         )}
       </div>
       <div className="flex flex-col justify-start p-5">
-        <MovieButton/> 
+        <MovieButton />
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-6 border-b border-gray-200 pb-2">
           {movie.title}
         </h1>
@@ -65,8 +65,9 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
           <span className="font-bold">Rating:</span> {movie.rating}/5
         </p>
         <Button onClick={openPopup}> "Rate this movie:"</Button>
-        <PopUp open={open} onClose={closePopup}> </PopUp>
-        
+        <PopUp open={open} onClose={closePopup}>
+          {" "}
+        </PopUp>
       </div>
     </div>
   );
