@@ -1,57 +1,73 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import Image, { StaticImageData } from "next/image";
-import { FC, useState } from "react";
+import Image from "next/image";
+import { FC, useEffect, useState } from "react";
 import cn from "classnames";
 import { useRouter } from "next/navigation";
+import { Movie } from "@/app/types/Movie";
+import { auth } from "@/firebase/config";
 
 export interface MovieCardProps {
-  id: number;
-  title: string;
-  description: string;
-  image: StaticImageData;
-  rating: 1 | 2 | 3 | 4 | 5;
-  actors?: string[];
+  movie: Movie;
+  alreadyWatched?: boolean;
   openRating?: () => void;
 }
 
-const MovieCard: FC<MovieCardProps> = ({ openRating, ...props }) => {
+const MovieCard: FC<MovieCardProps> = ({
+  openRating,
+  movie,
+  alreadyWatched = false,
+}) => {
   const router = useRouter();
-  const [seen, setSeen] = useState(false);
-  const eye = seen ? "tabler:eye" : "tabler:eye-off";
-  const markAsSeen = () => {
-    setSeen(!seen);
+  const userId = auth.currentUser?.uid;
+  const [isWatched, setWatched] = useState(false);
+  const eye = isWatched ? "tabler:eye" : "tabler:eye-off";
+  const markAsWatched = () => {
+    let method = !isWatched ? "POST" : "DELETE";
+    saveToDb(method);
+    setWatched(!isWatched);
+  };
+
+  useEffect(() => {
+    alreadyWatched && setWatched(true);
+  }, [alreadyWatched]);
+
+  const saveToDb = async (method: string) => {
+    await fetch(`/api/users/${userId}/movies`, {
+      method: method,
+      body: JSON.stringify({ movieImdbId: movie.imdbid }),
+    });
   };
 
   return (
-    <div className="flex flex-col items-center w-[150px] space-y-2 ">
+    <div className="flex flex-col items-center w-[150px] h-fit space-y-2 ">
       <Image
-        onClick={() => router.push(`/movies/${props.id}`)}
-        src={props.image}
-        alt={props.title}
+        onClick={() => router.push(`/movies/${movie.imdbid}`)}
+        src={movie.image}
+        alt={movie.title}
         className="rounded-md hover:cursor-pointer hover:scale-105 transition-transform"
         width={150}
         height={150}
       />
       <div className="w-full flex items-center justify-between px-3">
         <Icon
-          onClick={() => markAsSeen()}
+          onClick={() => markAsWatched()}
           icon={eye}
           width={20}
           height={20}
           className={cn(
             "hover:cursor-pointer ease-linear duration-100 rounded-md",
-            seen ? "bg-slate-600 text-black" : "text-slate-600"
+            isWatched ? "bg-white text-black" : "text-white"
           )}
         />
         <div
-          className="flex items-center space-x-1 hover:cursor-pointer hover:bg-slate-600 px-1 rounded-md"
+          className="flex items-center space-x-1 hover:cursor-pointer hover:bg-white px-1 rounded-md"
           onClick={openRating}
         >
-          <p className="text-sm ">{props.rating}</p>
+          <p className="text-sm ">{movie.rating}</p>
           <Icon icon={"tabler:star"} className=" text-yellow-200" />
         </div>
       </div>
-      <p className=" text-center text-wrap italic">{props.title}</p>
+      <p className=" text-center text-wrap italic">{movie.title}</p>
     </div>
   );
 };
