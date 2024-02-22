@@ -17,7 +17,7 @@ const Profile = () => {
     });
 
     const fecthUserWacthedMovies = async () => {
-      const res = await fetch(`/api/users/${userId}/movies`, {
+      const res = await fetch(`/api/users/${userId}/movies?fieldType=Watched`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
