@@ -1,6 +1,6 @@
 "use client";
-import React, { ChangeEvent, FC, useEffect, useRef } from "react";
-import MovieCard, { MovieCardProps } from "./organisms/MovieCard";
+import React, { FC, useEffect } from "react";
+import MovieCard from "./organisms/MovieCard";
 import { ScrollArea, ScrollBar } from "./organisms/ScrollArea";
 import cn from "classnames";
 import { Separator } from "./atoms/Seperator";
@@ -21,15 +21,35 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
 }) => {
   const [currentMovie, setCurrentMovie] = React.useState<Movie>();
   const [showRating, setShowRating] = React.useState(false);
+  const [userRating, setUserRating] = React.useState<
+    1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | undefined
+  >();
   const [userId, setUserId] = React.useState<string | null>(null);
   const [userMovieIDs, setUserMoviesIDs] = React.useState<string[]>();
+  const [saveDb, setSaveDb] = React.useState(false);
 
   const closeRating = () => {
     setShowRating(!showRating);
+    setSaveDb(true);
   };
   const openRating = (movie: Movie) => () => {
     setCurrentMovie(movie);
     setShowRating(!showRating);
+    fecthUserRating(movie.imdbid);
+  };
+
+  const fecthUserRating = async (movieId: string) => {
+    const res = await fetch(
+      `/api/users/${userId}/movies?fieldType=Rated&movieID=${movieId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await res.json();
+    setUserRating(data);
   };
 
   useEffect(() => {
@@ -40,7 +60,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
     });
 
     const fecthUserWacthedMovies = async () => {
-      const res = await fetch(`/api/users/${userId}/movies?type=MoviesWatchedID`, {
+      const res = await fetch(`/api/users/${userId}/movies?fieldType=Watched`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +77,12 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       <PopUp open={showRating} onClose={closeRating}>
         <div className="flex flex-col justify-center items-center">
           <p>{currentMovie?.title}</p>
-          <Stars />
+          <Stars
+            rating={userRating}
+            userId={userId}
+            movieImdbId={currentMovie?.imdbid}
+            save={saveDb}
+          />
         </div>
       </PopUp>
       {title && (
