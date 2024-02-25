@@ -1,5 +1,5 @@
 "use client";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import MovieCard from "./organisms/MovieCard";
 import { ScrollArea, ScrollBar } from "./organisms/ScrollArea";
 import cn from "classnames";
@@ -19,14 +19,11 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   movies,
   className,
 }) => {
-  const [currentMovie, setCurrentMovie] = React.useState<Movie>();
-  const [showRating, setShowRating] = React.useState(false);
-  const [userRating, setUserRating] = React.useState<
-    1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | undefined
-  >();
-  const [userId, setUserId] = React.useState<string | null>(null);
-  const [userMovieIDs, setUserMoviesIDs] = React.useState<string[]>();
-  const [saveDb, setSaveDb] = React.useState(false);
+  const [currentMovie, setCurrentMovie] = useState<Movie>();
+  const [showRating, setShowRating] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userMovieIDs, setUserMoviesIDs] = useState<string[]>();
+  const [saveDb, setSaveDb] = useState(false);
 
   const closeRating = () => {
     setShowRating(!showRating);
@@ -35,21 +32,6 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   const openRating = (movie: Movie) => () => {
     setCurrentMovie(movie);
     setShowRating(!showRating);
-    fecthUserRating(movie.imdbid);
-  };
-
-  const fecthUserRating = async (movieId: string) => {
-    const res = await fetch(
-      `/api/users/${userId}/movies?fieldType=Rated&movieID=${movieId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await res.json();
-    setUserRating(data);
   };
 
   useEffect(() => {
@@ -60,16 +42,19 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
     });
 
     const fecthUserWacthedMovies = async () => {
-      const res = await fetch(`/api/users/${userId}/movies?fieldType=Watched`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `/api/users/${userId}/movies?fieldType=Watched&type=ID`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = await res.json();
       setUserMoviesIDs(data);
     };
-    fecthUserWacthedMovies();
+    userId && fecthUserWacthedMovies();
   }, [userId]);
 
   return (
@@ -78,7 +63,6 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
         <div className="flex flex-col justify-center items-center">
           <p>{currentMovie?.title}</p>
           <Stars
-            rating={userRating}
             userId={userId}
             movieImdbId={currentMovie?.imdbid}
             save={saveDb}
@@ -94,16 +78,17 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       <div className="relative">
         <ScrollArea className={cn("whitespace-nowrap rounded-md", className)}>
           <div className="flex w-max space-x-8 p-4 z-0">
-            {movies.map((movie, index) => (
-              <MovieCard
-                openRating={openRating(movie)}
-                key={index}
-                movie={movie}
-                alreadyWatched={
-                  userMovieIDs ? userMovieIDs?.includes(movie.imdbid) : false
-                }
-              />
-            ))}
+            {movies &&
+              movies.map((movie, index) => (
+                <MovieCard
+                  openRating={openRating(movie)}
+                  key={index}
+                  movie={movie}
+                  alreadyWatched={
+                    userMovieIDs ? userMovieIDs?.includes(movie.imdbid) : false
+                  }
+                />
+              ))}
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
