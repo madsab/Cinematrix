@@ -7,16 +7,19 @@ import { useEffect, useState } from "react";
 
 const Profile = () => {
   const [moviesWatched, setMoviesWatched] = useState<Movie[]>([]);
+  const [moviesRated, setMoviesRated] = useState<Movie[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUserId(user.uid);
+        fecthUserWacthedMovies();
       }
     });
 
     const fecthUserWacthedMovies = async () => {
+      if (userId === null) return;
       const res = await fetch(`/api/users/${userId}/movies?fieldType=Watched`, {
         method: "GET",
         headers: {
@@ -24,9 +27,27 @@ const Profile = () => {
         },
       });
       const data = await res.json();
+      console.log(data);
       setMoviesWatched(data);
     };
-    fecthUserWacthedMovies();
+
+    const fecthUserRatedMovies = async () => {
+      if (userId === null) return;
+      const res = await fetch(
+        `/api/users/${userId}/movies?fieldType=Rated&type=ID`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      console.log(data);
+      // setMoviesRated(data);
+    };
+
+    fecthUserRatedMovies();
   }, [userId]);
   return (
     <div className=" flex w-full mt-10">
