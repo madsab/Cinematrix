@@ -27,24 +27,19 @@ const Profile = () => {
         },
       });
       const data = await res.json();
-      console.log(data);
       setMoviesWatched(data);
     };
 
     const fecthUserRatedMovies = async () => {
       if (userId === null) return;
-      const res = await fetch(
-        `/api/users/${userId}/movies?fieldType=Rated&type=ID`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await fetch(`/api/users/${userId}/movies?fieldType=Rated`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const data = await res.json();
-      console.log(data);
-      // setMoviesRated(data);
+      setMoviesRated(data);
     };
 
     fecthUserRatedMovies();
@@ -59,6 +54,7 @@ const Profile = () => {
       <div className=" ml-20 w-4/5 space-y-6">
         {/* <MovieScrollArea title="Your ratings:" movies={[]} /> */}
         <MovieScrollArea title="Movies you've seen:" movies={moviesWatched} />
+        <MovieScrollArea title="Movies you've rated:" movies={moviesRated} />
       </div>
     </div>
   );

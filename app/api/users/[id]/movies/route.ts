@@ -56,21 +56,29 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
         }
 
         if (fieldType === "Rated") {
+            let moviesRated = (await getDoc(userMoviesDB)).get("moviesRated")
+            console.log("Movies rated: ", moviesRated)
             if (type === "ID") {
-                const moviesRatedIDs = (await getDoc(userMoviesDB)).get("moviesRated")
-                return new Response(JSON.stringify(moviesRatedIDs))
+                return new Response(JSON.stringify(Object.keys(moviesRated as {})))
             }
             if (movieID !== null) {
-                const data = (await getDoc(doc(movieDB, movieID)))
-                const movie = data.data()
-                if (movie){
-                    movie.id = data.id
+                const rating = moviesRated[movieID]
+                console.log("Rating right now: ", rating)
+                if (rating){
+                    return new Response(JSON.stringify(rating))
                 } else {
-                    return new Response(JSON.stringify({message : fieldType + ": Movie not found"}), {status: 404})
+                    return new Response(JSON.stringify({message : fieldType + ": Movie not found"}), {status: 504})
                 }
-
-                return new Response(JSON.stringify(movie))
             }
+            moviesRated = Object.keys(moviesRated)
+            const data = await getDocs(query(movieDB, where("imdbid", "in", moviesRated)))
+
+            const movies = data.docs.map((doc) => {
+                const movieData = doc.data();
+                movieData.id = doc.id;
+                return movieData;
+            });
+            return new Response(JSON.stringify(movies))
 
         }
         return new Response(JSON.stringify({message: "Missing right parameters" }), {status: 500})
