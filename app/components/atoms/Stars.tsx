@@ -1,19 +1,20 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { FC, useEffect, useState } from "react";
 import cn from "classnames";
+import { set } from "firebase/database";
 
 interface StarsProps {
-  rating?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | undefined;
   save: boolean;
   userId: string | null;
   movieImdbId: string | undefined;
+  reset?: boolean;
 }
 
 const Stars: FC<StarsProps> = ({
-  rating,
   userId,
   movieImdbId,
   save = false,
+  reset,
 }) => {
   const size = 30;
   const [originalRating, setOriginalRating] = useState(0); // Todo replace with actual rating
@@ -21,11 +22,23 @@ const Stars: FC<StarsProps> = ({
   const [clicked, setClicked] = useState(false);
 
   useEffect(() => {
-    rating && setOriginalRating(rating);
+    const fetchUserRating = async () => {
+      const res = await fetch(
+        `/api/users/${userId}/movies?fieldType=Rated&movieID=${movieImdbId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      setCurrentRating(data);
+    };
 
-    const saveToDb = () => {
+    const saveToDb = async () => {
       if (currentRating != 0) {
-        const res = fetch(`/api/users/${userId}/movies?type=MovieRatings`, {
+        await fetch(`/api/users/${userId}/movies?fieldType=Rated`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -38,10 +51,20 @@ const Stars: FC<StarsProps> = ({
       }
     };
 
+    userId && movieImdbId && fetchUserRating();
+
     if (save) {
+      console.log("Saving to db in Stars");
       saveToDb();
     }
-  }, [rating, save, currentRating, userId, movieImdbId]);
+  }, [save, currentRating, userId, movieImdbId]);
+
+  // Reset rating when reset is true
+  useEffect(() => {
+    if (reset) {
+      setCurrentRating(0);
+    }
+  }, [reset]);
 
   const handleStarHover = (starIndex: number) => {
     setCurrentRating(starIndex + 1);

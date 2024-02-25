@@ -16,7 +16,6 @@ const PopUp: FC<PopUpProps> = ({ children, className, open, onClose }) => {
     const handleClickOutside = (event: MouseEvent) => {
       if (open && ref.current && !ref.current.contains(event.target)) {
         onClose();
-        console.log("click outside");
       }
     };
     document.addEventListener("click", handleClickOutside, true);

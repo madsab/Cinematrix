@@ -57,17 +57,15 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
 
         if (fieldType === "Rated") {
             let moviesRated = (await getDoc(userMoviesDB)).get("moviesRated")
-            console.log("Movies rated: ", moviesRated)
             if (type === "ID") {
                 return new Response(JSON.stringify(Object.keys(moviesRated as {})))
             }
             if (movieID !== null) {
                 const rating = moviesRated[movieID]
-                console.log("Rating right now: ", rating)
                 if (rating){
                     return new Response(JSON.stringify(rating))
                 } else {
-                    return new Response(JSON.stringify({message : fieldType + ": Movie not found"}), {status: 504})
+                    return new Response(JSON.stringify(0))
                 }
             }
             moviesRated = Object.keys(moviesRated)
