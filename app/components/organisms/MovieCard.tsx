@@ -34,7 +34,7 @@ const MovieCard: FC<MovieCardProps> = ({
   const saveToDb = async (method: string) => {
     await fetch(`/api/users/${userId}/movies?fieldType=Watched`, {
       method: method,
-      body: JSON.stringify({ movieImdbId: movie.imdbid }),
+      body: JSON.stringify(movie.imdbid),
     });
   };
 
