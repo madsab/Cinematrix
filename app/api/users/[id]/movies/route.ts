@@ -1,33 +1,47 @@
 import { db } from "@/firebase/config";
-import { QueryFieldFilterConstraint, arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, QueryLimitConstraint, where, DocumentData, getDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, QueryLimitConstraint, where, DocumentData, getDoc } from "firebase/firestore";
 import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 
+type fieldType = "Watched" | "Rated" | null
+type type = "ID" | null
+type movieID = string | null
+
 export async function GET(req: NextRequest, params: {params: { id: string }}) {
-    const fieldType = req.nextUrl.searchParams.get("fieldType") // Watched or Rated
-    const type = req.nextUrl.searchParams.get("type") // ID or nothing (nothing will return the whole movie object (or a list of them..)
-    const movieID = req.nextUrl.searchParams.get("movieID")
-    const userMoviesDB = doc(db, "users", params.params.id)
+    const fieldType = req.nextUrl.searchParams.get("fieldType") as fieldType // Watched or Rated
+    const type = req.nextUrl.searchParams.get("type") as type // ID or nothing (nothing will return the whole movie object (or a list of them..)
+    const movieID = req.nextUrl.searchParams.get("movieID") as movieID // The ID of the movie to get
+    const userID = params.params.id
+
+    const userMoviesDB = doc(db, "users", userID)
     const movieDB = collection(db, "movies")
-    const watchedMovies: any[] = []
+
     try{
+        if (userID === "null" || !userID){
+            return new Response(JSON.stringify({message: "Missing valid user, got: ", userID }), {status: 500})
+        }
 
         if (fieldType === "Watched") {
             const moviesWatched = (await getDoc(userMoviesDB)).get("moviesWatched") as []
+            // Get all movie IDs watched by the user
             if (type === "ID") {
                 return new Response(JSON.stringify(moviesWatched))
             }
+            // Get movie object by ID
             if (movieID !== null) {
-                const data = await getDocs(query(movieDB, where(movieID, "in", watchedMovies)))
+                const data = (await getDoc(doc(movieDB, movieID)))
+                const movie = data.data()
+                if (movie){
+                    movie.id = data.id
+                } else {
+                    return new Response(JSON.stringify({message: fieldType + ": Movie not found"}), {status: 404})
+                }
 
-                const movies = data.docs.map((doc) => {
-                    const movieData = doc.data();
-                    movieData.id = doc.id;
-                    return movieData;
-                });
-                return new Response(JSON.stringify(movies))
+                return new Response(JSON.stringify(movie))
             }
+            const watchedMovies: any[] = []
             //Had to add moviesWatched to an array to be able to use it in next query, or else moviesWatched would be empty.
+            console.log("UserID:", userID, "Movies watched:", moviesWatched)
             moviesWatched.forEach((movie) => {
                 watchedMovies.push(movie)
             })
@@ -38,58 +52,64 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
                 movieData.id = doc.id;
                 return movieData;
             });
-
+            return new Response(JSON.stringify(movies))
         }
 
         if (fieldType === "Rated") {
-            const moviesRated = (await getDoc(userMoviesDB)).get("moviesRated") as []
-
             if (type === "ID") {
-                return new Response(JSON.stringify(moviesRated))
+                const moviesRatedIDs = (await getDoc(userMoviesDB)).get("moviesRated")
+                return new Response(JSON.stringify(moviesRatedIDs))
             }
-            const ratedMovies: any[] = []
-            moviesRated.forEach( (movie) => {
-                ratedMovies.push(movie)
-            })
+            if (movieID !== null) {
+                const data = (await getDoc(doc(movieDB, movieID)))
+                const movie = data.data()
+                if (movie){
+                    movie.id = data.id
+                } else {
+                    return new Response(JSON.stringify({message : fieldType + ": Movie not found"}), {status: 404})
+                }
+
+                return new Response(JSON.stringify(movie))
+            }
+
         }
-
-
-
-
+        return new Response(JSON.stringify({message: "Missing right parameters" }), {status: 500})
 
     } catch (error) {
-
-        return new Response("Error", {status: 200})
+        return new Response(JSON.stringify({message: "Unexpected error: " + error }), {status: 500})
     }
 
 }
 
-export async function POST(req: NextRequest, params: {params: { id: string }}, res: NextApiResponse) {
-    const type = req.nextUrl.searchParams.get("type")
+export async function POST(req: NextRequest, params: {params: { id: string }}) {
+    const fieldType = req.nextUrl.searchParams.get("fieldType")
+    const movieImdbId = await req.json();
     const userDoc = doc(db, "users", params.params.id)
 
 
-    if (type === "MovieWatched") {
-        const { movieImdbId  } = await req.json()
+    if (fieldType === "Watched") {
         await updateDoc(userDoc, {
             moviesWatched: arrayUnion(movieImdbId),
         })
+        return new Response(JSON.stringify({message: "Movie added to watched"}), {status: 201})
     }
-//movieRated is not stored as an Array, hence arrayUnion can't be used
-    if (type === "MovieRatings") {
+
+    if (fieldType === "Rated") {
         let mapPush: any = new Map();
-        const { movieImdbId, rating } = await req.json()
+        const { rating } = await req.json()
         mapPush.set(movieImdbId, rating)
 
         const field = (await getDoc(userDoc)).get("movieRated")
-        console.log(field)
+        console.log("Current rated movies: ", field)
+
         const updatedData = {...field, ...mapPush}
-        await updateDoc(userDoc, {
-            moviesRated: updatedData
-        })
+        // await updateDoc(userDoc, {
+        //     moviesRated: updatedData
+        // })
+        return new Response(JSON.stringify({message: "Movie added to rated"}), {status: 201})
 
     }
-    return res.status(201)
+    return new Response(JSON.stringify({message: "Missing right parameters" }), {status: 500})
 }
 
 export async function DELETE(req: NextRequest, params: {params: { id: string }}, res: NextApiResponse) {
@@ -98,6 +118,6 @@ export async function DELETE(req: NextRequest, params: {params: { id: string }},
     await updateDoc(userDoc, {
         moviesWatched: arrayRemove(movieImdbId),
     })
-    return res.status(200)
+    return new Response(JSON.stringify({message: "Deletion successful"}), {status: 200})
 }
 
