@@ -10,7 +10,6 @@ import cn from "classnames";
 import { or } from "firebase/firestore";
 
 export interface StarsProps {
-  save: boolean;
   userId: string | null;
   movieImdbId: string | undefined;
 }
@@ -40,10 +39,11 @@ const Stars = forwardRef<StarsRef, StarsProps>(
         );
         const data = await res.json();
         setCurrentRating(data);
+        setOriginalRating(data);
       };
-
+      resetRating();
       userId && movieImdbId && fetchUserRating();
-    }, [currentRating, userId, movieImdbId]);
+    }, [userId, movieImdbId]);
 
     useImperativeHandle(ref, () => ({
       saveToDb,
@@ -51,7 +51,6 @@ const Stars = forwardRef<StarsRef, StarsProps>(
     }));
 
     const saveToDb = async () => {
-      console.log("saveToDb Movie:", movieImdbId, " Rating:", originalRating);
       if (originalRating != 0) {
         await fetch(`/api/users/${userId}/movies?fieldType=Rated`, {
           method: "POST",
