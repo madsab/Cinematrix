@@ -1,5 +1,5 @@
 import { db } from "@/firebase/config";
-import { arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, QueryLimitConstraint, where, DocumentData, getDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, QueryLimitConstraint, where, DocumentData, getDoc, setDoc } from "firebase/firestore";
 import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 
@@ -41,7 +41,6 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
             }
             const watchedMovies: any[] = []
             //Had to add moviesWatched to an array to be able to use it in next query, or else moviesWatched would be empty.
-            console.log("UserID:", userID, "Movies watched:", moviesWatched)
             moviesWatched.forEach((movie) => {
                 watchedMovies.push(movie)
             })
@@ -89,11 +88,11 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
 
 export async function POST(req: NextRequest, params: {params: { id: string }}) {
     const fieldType = req.nextUrl.searchParams.get("fieldType")
-    const movieImdbId = await req.json();
     const userDoc = doc(db, "users", params.params.id)
 
 
     if (fieldType === "Watched") {
+        const { movieImdbId } = await req.json();
         await updateDoc(userDoc, {
             moviesWatched: arrayUnion(movieImdbId),
         })
@@ -101,17 +100,11 @@ export async function POST(req: NextRequest, params: {params: { id: string }}) {
     }
 
     if (fieldType === "Rated") {
-        let mapPush: any = new Map();
-        const { rating } = await req.json()
-        mapPush.set(movieImdbId, rating)
-
-        const field = (await getDoc(userDoc)).get("movieRated")
-        console.log("Current rated movies: ", field)
-
-        const updatedData = {...field, ...mapPush}
-        // await updateDoc(userDoc, {
-        //     moviesRated: updatedData
-        // })
+        const { movieImdbId, rating } = await req.json()
+        console.log("MovieID: ", movieImdbId, "Rating: ", rating)
+        await setDoc(userDoc, {
+            moviesRated: {[movieImdbId]: rating}
+        }, {merge: true})
         return new Response(JSON.stringify({message: "Movie added to rated"}), {status: 201})
 
     }
@@ -119,7 +112,7 @@ export async function POST(req: NextRequest, params: {params: { id: string }}) {
 }
 
 export async function DELETE(req: NextRequest, params: {params: { id: string }}, res: NextApiResponse) {
-    const movieImdbId = await req.json()
+    const { movieImdbId } = await req.json()
     const userDoc = doc(db, "users", params.params.id)
     await updateDoc(userDoc, {
         moviesWatched: arrayRemove(movieImdbId),
