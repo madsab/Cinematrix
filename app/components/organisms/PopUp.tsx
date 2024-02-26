@@ -6,23 +6,30 @@ interface PopUpProps {
   children: React.ReactNode;
   className?: string;
   open: boolean;
-  onClose: () => void;
+  onCancel: () => void;
+  onConfirm: () => void;
 }
 
-const PopUp: FC<PopUpProps> = ({ children, className, open, onClose }) => {
+const PopUp: FC<PopUpProps> = ({
+  children,
+  className,
+  open,
+  onCancel,
+  onConfirm,
+}) => {
   const ref = useRef<any>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (open && ref.current && !ref.current.contains(event.target)) {
-        onClose();
+        onCancel();
       }
     };
     document.addEventListener("click", handleClickOutside, true);
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
-  }, [ref, open, onClose]);
+  }, [ref, open, onCancel]);
 
   return (
     <div
@@ -37,10 +44,10 @@ const PopUp: FC<PopUpProps> = ({ children, className, open, onClose }) => {
     >
       {children}
       <div className="w-full flex justify-end space-x-3">
-        <Button onClick={onClose} type="cancel">
+        <Button onClick={onCancel} type="cancel">
           Cancel
         </Button>
-        <Button onClick={onClose} type="confirm">
+        <Button onClick={onConfirm} type="confirm">
           Confirm
         </Button>
       </div>
