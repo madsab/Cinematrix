@@ -24,11 +24,10 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   const [showRating, setShowRating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [userMovieIDs, setUserMoviesIDs] = useState<string[]>();
-  const [saveDb, setSaveDb] = useState(false);
 
   const closeRating = () => {
     setShowRating(!showRating);
-    setSaveDb(true);
+    ref.current && ref.current.resetRating();
   };
   const openRating = (movie: Movie) => () => {
     setCurrentMovie(movie);
@@ -68,12 +67,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       <PopUp open={showRating} onCancel={closeRating} onConfirm={handleConfirm}>
         <div className="flex flex-col justify-center items-center">
           <p>{currentMovie?.title}</p>
-          <Stars
-            ref={ref}
-            userId={userId}
-            movieImdbId={currentMovie?.imdbid}
-            save={saveDb}
-          />
+          <Stars ref={ref} userId={userId} movieImdbId={currentMovie?.imdbid} />
         </div>
       </PopUp>
       {title && (
