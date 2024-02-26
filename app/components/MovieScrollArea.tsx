@@ -1,11 +1,11 @@
 "use client";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import MovieCard from "./organisms/MovieCard";
 import { ScrollArea, ScrollBar } from "./organisms/ScrollArea";
 import cn from "classnames";
 import { Separator } from "./atoms/Seperator";
 import PopUp from "./organisms/PopUp";
-import Stars from "./atoms/Stars";
+import Stars, { StarsProps, StarsRef } from "./atoms/Stars";
 import { Movie } from "../types/Movie";
 import { auth } from "@/firebase/config";
 interface MovieScrollAreaProps {
@@ -19,6 +19,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   movies,
   className,
 }) => {
+  const ref = useRef<StarsRef>(null);
   const [currentMovie, setCurrentMovie] = useState<Movie>();
   const [showRating, setShowRating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
@@ -32,6 +33,11 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   const openRating = (movie: Movie) => () => {
     setCurrentMovie(movie);
     setShowRating(!showRating);
+  };
+
+  const handleConfirm = () => {
+    setShowRating(false);
+    ref.current && ref.current.saveToDb();
   };
 
   useEffect(() => {
@@ -59,10 +65,11 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
 
   return (
     <div className="relative">
-      <PopUp open={showRating} onClose={closeRating}>
+      <PopUp open={showRating} onCancel={closeRating} onConfirm={handleConfirm}>
         <div className="flex flex-col justify-center items-center">
           <p>{currentMovie?.title}</p>
           <Stars
+            ref={ref}
             userId={userId}
             movieImdbId={currentMovie?.imdbid}
             save={saveDb}
