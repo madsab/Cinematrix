@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef } from "react";
 import Button from "../atoms/Button";
 
 interface PopUpProps {

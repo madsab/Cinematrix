@@ -5,7 +5,7 @@ import { ScrollArea, ScrollBar } from "./organisms/ScrollArea";
 import cn from "classnames";
 import { Separator } from "./atoms/Seperator";
 import PopUp from "./organisms/PopUp";
-import Stars, { StarsProps, StarsRef } from "./atoms/Stars";
+import Stars, { StarsRef } from "./atoms/Stars";
 import { Movie } from "../types/Movie";
 import { auth } from "@/firebase/config";
 interface MovieScrollAreaProps {

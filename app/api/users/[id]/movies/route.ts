@@ -1,5 +1,5 @@
 import { db } from "@/firebase/config";
-import { arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, QueryLimitConstraint, where, DocumentData, getDoc, setDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, where, getDoc, setDoc } from "firebase/firestore";
 import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 

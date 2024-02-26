@@ -1,13 +1,11 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, {
-  FC,
   forwardRef,
   useEffect,
   useImperativeHandle,
   useState,
 } from "react";
 import cn from "classnames";
-import { or } from "firebase/firestore";
 
 export interface StarsProps {
   userId: string | null;
