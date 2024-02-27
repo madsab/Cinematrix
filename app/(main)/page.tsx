@@ -35,7 +35,6 @@ export default function Home() {
       });
       const data = await res.json();
       setSponsors(data);
-      console.log(sponsors);
     };
 
     if (notLoggedIn) {
@@ -68,7 +67,7 @@ export default function Home() {
               <div className="relative container mx-auto mt-8 flex justify-content z-0">
                 <ImageCarousel images={sponsors} />
               </div>
-          <section className="-mt-[25%] backdrop-blur-sm bg-slate-950/30">
+          <section className="-mt-[22%] backdrop-blur-sm bg-slate-950/30">
             <MovieScrollArea title="For You" movies={movies} />
           </section>
           <div>{user?.email}</div>
