@@ -58,6 +58,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       );
       const data = await res.json();
       setUserMoviesIDs(data);
+      console.log(movies.length);
     };
     userId && fecthUserWacthedMovies();
   }, [userId]);
@@ -79,7 +80,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       <div className="relative">
         <ScrollArea className={cn("whitespace-nowrap rounded-md", className)}>
           <div className="flex w-max space-x-8 p-4 z-0">
-            {movies &&
+            {movies && movies instanceof Array &&
               movies.map((movie, index) => (
                 <MovieCard
                   openRating={openRating(movie)}
