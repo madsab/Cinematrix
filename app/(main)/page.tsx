@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { User as FirebaseUser } from "firebase/auth";
 import { Movie } from "../types/Movie";
+import { Sponsored } from "../types/Sponsored";
 import { auth } from "@/firebase/config";
 import ImageCarousel from "../components/ImageCarousel";
 
@@ -25,6 +26,8 @@ export default function Home() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [sponsors, setSponsors] = useState<Sponsored[]>([]);
+
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -35,10 +38,20 @@ export default function Home() {
       setMovies(data);
     };
 
+    const fetchSponsors = async () => {
+      const res = await fetch("/api/sponsored", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setSponsors(data);
+      console.log(sponsors);
+    };
+
     if (notLoggedIn) {
       redirect("/signin");
     } else {
       fetchMovies();
+      fetchSponsors();
     }
   }, [notLoggedIn]);
 
@@ -62,7 +75,7 @@ export default function Home() {
         <div>
             <div className="relative">
               <div className="relative container mx-auto mt-8 flex justify-content z-0">
-                <ImageCarousel images={images} />
+                <ImageCarousel images={sponsors.map(s => s.poster)} />
               </div>
           <section className="-mt-80">
             <MovieScrollArea title="For You" movies={movies} />
