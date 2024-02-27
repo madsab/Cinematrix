@@ -32,7 +32,7 @@ const MovieCard: FC<MovieCardProps> = ({
   }, [alreadyWatched]);
 
   const saveToDb = async (method: string) => {
-    await fetch(`/api/users/${userId}/movies`, {
+    await fetch(`/api/users/${userId}/movies?fieldType=Watched`, {
       method: method,
       body: JSON.stringify({ movieImdbId: movie.imdbid }),
     });
@@ -44,9 +44,13 @@ const MovieCard: FC<MovieCardProps> = ({
         onClick={() => router.push(`/movies/${movie.imdbid}`)}
         src={movie.image}
         alt={movie.title}
-        className="rounded-md hover:cursor-pointer hover:scale-105 transition-transform"
         width={150}
-        height={150}
+        height={200}
+        className="rounded-md hover:cursor-pointer hover:scale-105 transition-transform"
+        style={{
+          width: "100%",
+          height: "auto",
+        }}
       />
       <div className="w-full flex items-center justify-between px-3">
         <Icon
