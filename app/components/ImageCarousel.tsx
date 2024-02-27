@@ -1,30 +1,37 @@
-import { useState } from 'react';
+"use client";
+import React from "react";
+import Image from "@/node_modules/next/image"
+import { useEffect, useState } from 'react';
 
-interface ImageCarouselProps {
+interface CarouselProps {
   images: string[];
 }
 
-const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handleNext = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 5000); // Change the interval as needed (e.g., 3000 for 3 seconds)
 
-  const handlePrev = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-  };
+    return () => clearInterval(intervalId);
+  }, [images.length]);
 
   return (
-    <div className="relative">
-      <img src={images[currentImageIndex]} alt={`Image ${currentImageIndex + 1}`} className="w-full" />
-      <div className="absolute top-1/2 left-0 right-0 flex justify-between">
-        <button onClick={handlePrev} className="text-white p-2 bg-gray-800">&lt;</button>
-        <button onClick={handleNext} className="text-white p-2 bg-gray-800">&gt;</button>
-      </div>
+    <div className=" overflow-hidden h-screen w-full flex justify-center">
+      {images.map((image, index) => (
+        <div
+            key={index}
+            className={`h-2/3 w-full absolute inset-0 transition-opacity flex justify-center ${
+                index === currentIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+        >
+          <img src={image} alt={`Slide ${index + 1}`} className="h-full w-full object-cover md:object-scale-up" />
+        </div>
+      ))}
     </div>
   );
 };
 
 export default ImageCarousel;
-
