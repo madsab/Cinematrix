@@ -96,10 +96,6 @@ const images = [
     "https://newshour-classroom-tc.digi-producers.pbs.org/uploads/images/Oppenheimer-Christopher-Nolan-0-1.width-1024_Kh9HV7C.jpg", 
     "https://i.ytimg.com/vi/eVgZn81e_nY/maxresdefault.jpg",
     "https://reviewersunite.files.wordpress.com/2019/10/jokercd0.png",
-  /*
-  "./assets/images/Annika.jpeg",
-  "./assets/images/img_2.png",
-  "./assets/images/img_3.jpeg", */ 
 ]
 
 export default function Home() {
