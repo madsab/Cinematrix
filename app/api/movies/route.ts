@@ -1,6 +1,5 @@
 import { db } from "@/firebase/config";
 import { collection, query, where, limit, getDocs } from "firebase/firestore";
-import { NextRequest } from "next/server";
 
 export async function GET() {
     try {
