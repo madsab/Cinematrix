@@ -1,13 +1,16 @@
 "use client";
 import React from "react";
-import Image from "@/node_modules/next/image"
+import Image from "next/image";
 import { useEffect, useState } from 'react';
+import { Sponsored } from "../types/Sponsored";
+import { useRouter } from "next/navigation";
 
 interface CarouselProps {
-  images: string[];
+  images: Sponsored[];
 }
 
 const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -27,7 +30,9 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
                 index === currentIndex ? 'opacity-100' : 'opacity-0'
             }`}
         >
-          <img src={image} alt={`Slide ${index + 1}`} className="h-full w-full object-cover md:object-scale-up" />
+          <img src={image.poster} alt={`Slide ${index + 1}`} className="h-full w-full object-cover md:object-scale-up" 
+            onClick={() => router.push(`/movies/${image.movieId}`)}
+            />
         </div>
       ))}
     </div>
