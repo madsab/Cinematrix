@@ -58,7 +58,6 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       );
       const data = await res.json();
       setUserMoviesIDs(data);
-      console.log(movies.length);
     };
     userId && fecthUserWacthedMovies();
   }, [userId]);
