@@ -7,13 +7,24 @@ export async function GET(req: NextRequest) {
         const sw = req.nextUrl.searchParams.get('sw') as string;
 
         const movieCollection = collection(db, "movies")
-        const q = query(movieCollection, or(
-            where("title", "==", sw), 
-            where("genre", "array-contains-any", [sw]),
-            ), 
-            limit(15))
-        const data = await getDocs(q)
-        const movies = data.docs.map((doc) => {
+
+        //Could not combine the two queries with neither and or ors,
+        //So I made them seperate
+
+        const q1 = query(movieCollection,
+            where("title", ">=", sw),
+            where("title", "<=", sw+"\uf8ff"),
+        limit(15));
+
+        const q2 = query(movieCollection,
+            where("genre", "array-contains-any", sw.split(",")),
+        limit(15));
+
+        const q1data = await getDocs(q1)
+        const q2data = await getDocs(q2)
+        const data = q1data.docs.concat(q2data.docs)
+
+        const movies = data.map((doc) => {
             const movieData = doc.data();
             movieData.id = doc.id;
             return movieData;
