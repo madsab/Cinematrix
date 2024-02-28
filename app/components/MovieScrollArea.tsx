@@ -79,7 +79,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       <div className="relative">
         <ScrollArea className={cn("whitespace-nowrap rounded-md", className)}>
           <div className="flex w-max space-x-8 p-4 z-0">
-            {movies && movies instanceof Array &&
+            {movies && movies instanceof Array && movies.length != 0 ?
               movies.map((movie, index) => (
                 <MovieCard
                   openRating={openRating(movie)}
@@ -89,7 +89,8 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                     userMovieIDs ? userMovieIDs?.includes(movie.imdbid) : false
                   }
                 />
-              ))}
+              )) : 
+              <div>No results</div>}
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>

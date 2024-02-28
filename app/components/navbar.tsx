@@ -1,9 +1,15 @@
+"use client";
 import Image from "@/node_modules/next/image"
 import Link from "@/node_modules/next/link"
 import Logo from "../assets/images/logo.png"
 import Avatar from "../assets/images/avatar.png"
+import { useRouter } from "next/navigation";
+import { useState } from "react"
 
 const Navbar = () => {
+    const [search, setSearch] = useState("");
+    const router = useRouter();
+
     return(
         <div className=" bg-gradient-to-r from-black to-pink-900 w-full p-2 flex">
             <div className=" flex-1 flex justify-evenly items-center">
@@ -18,7 +24,16 @@ const Navbar = () => {
                         </svg>
                         <span className="sr-only">Search icon</span>
                     </div>
-                    <input type="text" id="search-navbar" className="block w-full p-2 pl-10 text-sm text-gray-900 border border-pink-900 rounded-lg bg-black focus:ring-pink-900 focus:border-pink-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-pink-900 dark:focus:border-pink-900 outline-none" placeholder="Search..."/>
+                    <input type="text" 
+                    onChange={(e) => setSearch(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            console.log("/search/" + search);
+                            router.push("/search/" + search);
+                        }
+                    }
+                    }
+                    id="search-navbar" className="block w-full p-2 pl-10 text-sm text-white border border-pink-900 rounded-lg bg-black focus:ring-pink-900 focus:border-pink-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-pink-900 dark:focus:border-pink-900 outline-none" placeholder="Search..."/>
                 </div>
             </div>
             <div className="flex-1 flex justify-end items-center">
