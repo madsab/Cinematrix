@@ -17,18 +17,21 @@ const ActorCard: FC<ActorCardProps> = ({
 
   return (
     <div className="flex flex-col items-center w-[150px] h-fit space-y-2 ">
+      <div className="overflow-hidden w-[150px] h-[222px] rounded-md ">
       <Image
         onClick={() => router.push(`/actors/${actor.id}`)}
         src={actor.image}
         alt={actor.name}
         width={150}
         height={200}
-        className="rounded-md hover:cursor-pointer hover:scale-105 transition-transform"
+        className="hover:cursor-pointer hover:scale-105 transition-transform"
         style={{
           width: "100%",
           height: "auto",
         }}
       />
+      </div>
+      
       <div className="w-full flex items-center justify-between px-3">
         <p className=" text-wrap italic">{actor.name}</p>
 
