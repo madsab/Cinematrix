@@ -18,7 +18,7 @@ const GenreCard: FC<GenreCardProps> = ({
 
   return (
     <div className="flex flex-col items-center w-[150px] h-fit space-y-2">
-      <div className="relative rounded-md hover:cursor-pointer hover:scale-105 transition-transform"
+      <div className="relative rounded-md hover:cursor-pointer hover:scale-105 transition-transform group"
               onClick={() => router.push(`/genres/${genre.id}`)}
     >
       <Image
@@ -36,7 +36,7 @@ const GenreCard: FC<GenreCardProps> = ({
           icon={genre.icon}
           width={125}
           height={125}
-          className="absolute text-5xl text-center text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="absolute text-5xl text-center text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:scale-125 transition-transform"
 
         />
       </div>
