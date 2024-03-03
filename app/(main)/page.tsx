@@ -68,7 +68,7 @@ export default function Home() {
                 <ImageCarousel images={sponsors} />
               </div>
           <section className="-mt-[22%] backdrop-blur-sm bg-slate-950/30">
-            <MovieScrollArea title="For You" movies={movies} />
+            <MovieScrollArea title="For You" movies={movies} actors={[]} genres={[]} />
           </section>
           <div>{user?.email}</div>
           <button onClick={() => signOut(auth)}>Logout</button>

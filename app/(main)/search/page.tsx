@@ -51,7 +51,7 @@ export default function Search() {
         <div>
           <div className="relative">
           <section className="backdrop-blur-sm bg-slate-950/30">
-            <MovieScrollArea title={"Results for ..."} movies={movies} />
+            <MovieScrollArea title={"Results for ..."} movies={movies} actors={[]} genres={["Action"]} />
           </section>
         </div>
         </div>

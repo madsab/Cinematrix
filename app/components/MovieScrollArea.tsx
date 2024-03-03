@@ -7,16 +7,23 @@ import { Separator } from "./atoms/Seperator";
 import PopUp from "./organisms/PopUp";
 import Stars, { StarsRef } from "./atoms/Stars";
 import { Movie } from "../types/Movie";
+import { Actor } from "../types/Actor";
 import { auth } from "@/firebase/config";
+import GenreCard from "./organisms/GenreCard";
+import ActorCard from "./organisms/ActorCard";
 interface MovieScrollAreaProps {
   title?: string;
   movies: Movie[];
+  actors: Actor[];
+  genres: string[];
   className?: string;
 }
 
 const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   title,
   movies,
+  actors,
+  genres,
   className,
 }) => {
   const ref = useRef<StarsRef>(null);
@@ -79,7 +86,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       <div className="relative">
         <ScrollArea className={cn("whitespace-nowrap rounded-md", className)}>
           <div className="flex w-max space-x-8 p-4 z-0">
-            {movies && movies instanceof Array && movies.length != 0 ?
+            {movies && movies instanceof Array && movies.length != 0 &&
               movies.map((movie, index) => (
                 <MovieCard
                   openRating={openRating(movie)}
@@ -89,8 +96,26 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                     userMovieIDs ? userMovieIDs?.includes(movie.imdbid) : false
                   }
                 />
-              )) : 
-              <div>No results</div>}
+              ))}
+
+              {genres && genres instanceof Array && genres.length != 0 && 
+              genres.map((genreName, index) => (
+                <GenreCard genre={genreName} />
+              ))}
+
+              {actors && actors instanceof Array && actors.length != 0 && 
+              actors.map((actor, index) => (
+                <ActorCard
+                  actor={actor}
+                />
+                ))}
+
+              {
+              !(movies && movies instanceof Array && movies.length != 0)
+              && !(genres && genres instanceof Array && genres.length != 0)
+              && !(actors && actors instanceof Array && actors.length != 0)
+              &&<div>No results</div>
+              }
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
