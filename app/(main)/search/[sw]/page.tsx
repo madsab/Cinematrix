@@ -9,6 +9,7 @@ import { Movie } from "../../../types/Movie";
 import { auth } from "@/firebase/config";
 import { usePathname } from 'next/navigation'
 import { Actor } from "@/app/types/Actor";
+import { Genre } from "@/app/types/Genre";
 
 
 export default function Search() {
@@ -16,7 +17,7 @@ export default function Search() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [movies, setMovies] = useState<Movie[]>();
-  const [genres, setGenres] = useState<[]>();
+  const [genres, setGenres] = useState<Genre[]>();
   const [actors, setActors] = useState<Actor[]>();
 
   const path = usePathname().split("/");

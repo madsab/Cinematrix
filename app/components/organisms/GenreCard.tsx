@@ -1,13 +1,14 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
-import Genre from "../../assets/images/genre.png";
+import GenreImg from "../../assets/images/genres.png";
 import cn from "classnames";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
+import { Genre } from "@/app/types/Genre";
 
 
 export interface GenreCardProps {
-    genre: string;
+    genre: Genre;
   }
   
 const GenreCard: FC<GenreCardProps> = ({
@@ -16,20 +17,33 @@ const GenreCard: FC<GenreCardProps> = ({
   const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center w-[150px] h-fit space-y-2 ">
+    <div className="flex flex-col items-center w-[150px] h-fit space-y-2">
+      <div className="relative rounded-md hover:cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => router.push(`/genres/${genre.id}`)}
+    >
       <Image
-        onClick={() => router.push(`/genres/${genre}`)}
-        src={Genre}
-        alt={genre}
+        src={GenreImg}
+        alt={genre.id}
         width={150}
         height={200}
-        className="rounded-md hover:cursor-pointer hover:scale-105 transition-transform"
+        className="rounded-md hover:cursor-pointer"
         style={{
           width: "100%",
           height: "auto",
         }}
       />
+      <Icon
+          icon={genre.icon}
+          width={125}
+          height={125}
+          className="absolute text-5xl text-center text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+
+        />
+      </div>
+      
       <div className="w-full flex items-center justify-between px-3">
+        <p className="text-wrap italic">{genre.id}</p>
+
         <Icon
           icon={"tabler:heart"}
           width={20}
@@ -38,9 +52,8 @@ const GenreCard: FC<GenreCardProps> = ({
             "hover:cursor-pointer ease-linear duration-100 rounded-md bg-white text-black"
           )}
         />
-        <p className=" text-center text-wrap italic">{genre}</p>
-
       </div>
+
     </div>
   );
 };

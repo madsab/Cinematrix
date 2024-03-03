@@ -30,6 +30,8 @@ const ActorCard: FC<ActorCardProps> = ({
         }}
       />
       <div className="w-full flex items-center justify-between px-3">
+        <p className=" text-wrap italic">{actor.name}</p>
+
         <Icon
           icon={"tabler:heart"}
           width={20}
@@ -39,7 +41,6 @@ const ActorCard: FC<ActorCardProps> = ({
           )}
         />
       </div>
-      <p className=" text-center text-wrap italic">{actor.name}</p>
     </div>
   );
 };

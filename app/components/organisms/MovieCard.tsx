@@ -71,7 +71,7 @@ const MovieCard: FC<MovieCardProps> = ({
           <Icon icon={"tabler:star"} className=" text-yellow-200" />
         </div>
       </div>
-      <p className=" text-center text-wrap italic">{movie.title}</p>
+      <p className="text-center text-wrap italic">{movie.title}</p>
     </div>
   );
 };

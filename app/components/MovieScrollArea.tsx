@@ -11,11 +11,12 @@ import { Actor } from "../types/Actor";
 import { auth } from "@/firebase/config";
 import GenreCard from "./organisms/GenreCard";
 import ActorCard from "./organisms/ActorCard";
+import { Genre } from "../types/Genre";
 interface MovieScrollAreaProps {
   title?: string;
   movies: Movie[];
   actors: Actor[];
-  genres: string[];
+  genres: Genre[];
   className?: string;
 }
 
@@ -100,7 +101,9 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
 
               {genres && genres instanceof Array && genres.length != 0 && 
               genres.map((genreName, index) => (
-                <GenreCard genre={genreName} />
+                <GenreCard 
+                genre={genreName} 
+                />
               ))}
 
               {actors && actors instanceof Array && actors.length != 0 && 
