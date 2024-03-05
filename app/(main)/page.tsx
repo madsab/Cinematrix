@@ -19,6 +19,7 @@ export default function Home() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [badMovies, setBadMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [actors, setActors] = useState<Actor[]>([]);
 
@@ -32,6 +33,14 @@ export default function Home() {
       });
       const data = await res.json();
       setMovies(data);
+    };
+
+    const fetchBad = async () => {
+      const res = await fetch("/api/bad", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setBadMovies(data);
     };
 
     const fetchActors = async () => {
@@ -64,6 +73,7 @@ export default function Home() {
       fetchMovies();
       fetchActors();
       fetchGenres();
+      fetchBad();
       fetchSponsors();
     }
   }, [notLoggedIn]);
@@ -92,6 +102,9 @@ export default function Home() {
               </div>
           <section className="-mt-[22%] backdrop-blur-sm bg-slate-950/30">
             <MovieScrollArea title="For You" movies={movies} actors={[]} genres={[]} />
+          </section>
+          <section>
+            <MovieScrollArea title="Movies best skipped" movies={badMovies} actors={[]} genres={[]} />
           </section>
           <section>
             <MovieScrollArea title="Genres" movies={[]} actors={[]} genres={genres} />

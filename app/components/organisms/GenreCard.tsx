@@ -37,7 +37,6 @@ const GenreCard: FC<GenreCardProps> = ({
           width={125}
           height={125}
           className="absolute text-5xl text-center text-white top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:scale-125 transition-transform"
-
         />
       </div>
       
