@@ -12,6 +12,7 @@ import { auth } from "@/firebase/config";
 import ImageCarousel from "../components/ImageCarousel";
 import { Genre } from "../types/Genre";
 import { Actor } from "../types/Actor";
+import { Carousel } from 'flowbite';
 
 
 export default function Home() {
@@ -80,6 +81,8 @@ export default function Home() {
     }
   });
 
+  const carousel = new Carousel(carouselElement, sponsors);
+
   return (
     <main className="">
       {loading ? (
@@ -87,6 +90,9 @@ export default function Home() {
       ) : (
         <div>
             <div className="relative">
+              <div>
+                <carouselElement></carouselElement>
+              </div>
               <div className="relative container mx-auto mt-8 flex justify-content z-0">
                 <ImageCarousel images={sponsors} />
               </div>

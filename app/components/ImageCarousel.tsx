@@ -22,18 +22,20 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
   }, [images.length]);
 
   return (
-    <div className=" overflow-hidden h-screen w-full flex justify-center hover:cursor-pointer">
+    <div className=" overflow-hidden h-screen w-full flex justify-center">
       {images.map((image, index) => (
         <div
             key={index}
             className={`h-2/3 w-full absolute inset-0 transition-opacity flex justify-center overflow-hidden ${
-                index === currentIndex && 'hidden'
+                
+                index !== currentIndex && 'hidden' //&& console.log("slide", currentIndex)
             }`}
         >
-          <img src={image.poster} alt={`Slide ${index + 1}`} className="h-full w-full object-cover md:object-scale-up hover:scale-105 transition-transform" 
+          <img src={image.poster} alt={`Slide ${index + 1}`} className="h-full w-full object-cover md:object-scale-up hover:translate-x-96 transition-transform" 
             onClick={() => router.push(`/movies/${image.movieId}`)}
-            />
+            /> <div>{currentIndex}</div>
         </div>
+       
       ))}
     </div>
   );
