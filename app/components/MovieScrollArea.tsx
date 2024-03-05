@@ -102,6 +102,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
               {genres && genres instanceof Array && genres.length != 0 && 
               genres.map((genreName, index) => (
                 <GenreCard 
+                key={index}
                 genre={genreName} 
                 />
               ))}
@@ -109,6 +110,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
               {actors && actors instanceof Array && actors.length != 0 && 
               actors.map((actor, index) => (
                 <ActorCard
+                key={index}
                   actor={actor}
                 />
                 ))}
