@@ -1,15 +1,20 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 
-export default function Badge() {
+interface MovieButtonProps {
+  onClick?: () => void;
+}
+
+export default function MovieButton({ onClick }: MovieButtonProps) {
   const [clicked, setClicked] = useState(false);
   const handleClick = () => {
     setClicked(!clicked);
+    onClick && onClick();
   };
 
   return (
     <button
-      className={`flex items-start border border-[#CDDBC9] bg-[#CDDBC9] rounded-md px-2 py-1 ${
+      className={` w-fit flex items-start border border-[#CDDBC9] bg-[#CDDBC9] rounded-md px-2 py-1 ${
         clicked ? "text-[#AD480F]" : "text-[#37A81B]"
       } hover:bg-[#CDDBC9] hover:scale-105 transform transition-all duration-150 ease-in-out`}
       onClick={handleClick}
