@@ -63,7 +63,7 @@ export default function Home() {
     };
 
     const fetchBad = async () => {
-      const res = await fetch("/api/bad", {
+      const res = await fetch("/api/genresPopular?genre=Bad", {
         method: "GET",
       });
       const data = await res.json();
