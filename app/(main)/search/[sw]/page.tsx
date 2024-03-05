@@ -8,6 +8,8 @@ import { User as FirebaseUser } from "firebase/auth";
 import { Movie } from "../../../types/Movie";
 import { auth } from "@/firebase/config";
 import { usePathname } from 'next/navigation'
+import { Actor } from "@/app/types/Actor";
+import { Genre } from "@/app/types/Genre";
 
 
 export default function Search() {
@@ -15,25 +17,45 @@ export default function Search() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [movies, setMovies] = useState<Movie[]>();
+  const [genres, setGenres] = useState<Genre[]>();
+  const [actors, setActors] = useState<Actor[]>();
+
   const path = usePathname().split("/");
   const sw = path[path.length-1];
-  const search = "../api/search?sw=" + sw;
+  const search = "../api/search?sw=" + sw + "&type=";
 
   useEffect(() => {
-    const fetchSearched = async () => {
-      console.log(search)
-
-      const res = await fetch(search, {
+    const fetchMovies = async () => {
+      const res = await fetch(search+"movies", {
         method: "GET",
       });
       const data = await res.json();
       setMovies(data);
     };
 
+    const fetchGenres = async () => {
+      const res = await fetch(search+"genres", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setGenres(data);
+    };
+
+    
+    const fetchActors = async () => {
+      const res = await fetch(search+"actors", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setActors(data);
+    };
+
     if (notLoggedIn) {
       redirect("/signin");
     } else {
-      fetchSearched();
+      fetchMovies();
+      fetchActors();
+      fetchGenres();
     }
   }, [notLoggedIn]);
 
@@ -57,7 +79,7 @@ export default function Search() {
         <div>
           <div className="relative">
           <section className="backdrop-blur-sm bg-slate-950/30">
-            <MovieScrollArea title={"Results for " + sw + "..."} movies={movies} />
+            <MovieScrollArea title={"Results for " + sw + "..."} movies={movies} genres={genres || []} actors={actors || []} />
           </section>
         </div>
         </div>

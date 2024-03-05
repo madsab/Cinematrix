@@ -1,35 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from "@/firebase/config";
-import { collection, query, where, limit, getDocs, or, and } from "firebase/firestore";
+import { collection, query, where, limit, getDocs, or, and, Query } from "firebase/firestore";
 
 export async function GET(req: NextRequest) {
+    const type = req.nextUrl.searchParams.get('type') as string;
+    const sw = (req.nextUrl.searchParams.get('sw') as string).toLowerCase().replace(/[^a-zA-Z]/g, '');
+
     try {
-        const sw = req.nextUrl.searchParams.get('sw') as string;
-
-        const movieCollection = collection(db, "movies")
-
-        //Could not combine the two queries with neither and or ors,
-        //So I made them seperate
-
-        const q1 = query(movieCollection,
-            where("title", ">=", sw),
-            where("title", "<=", sw+"\uf8ff"),
+        const collectionType = collection(db, type)
+        const q = query(collectionType,
+            where("sw", ">=", sw),
+            where("sw", "<=", sw+"\uf8ff"),
         limit(15));
+        const data = await getDocs(q);
 
-        const q2 = query(movieCollection,
-            where("genre", "array-contains-any", sw.split(",")),
-        limit(15));
+        if (type == "movies") {
+            const movies = data.docs.map((doc) => {
+                const movieData = doc.data();
+                movieData.id = doc.id;
+                return movieData;
+            });
+            return new Response(JSON.stringify(movies));
 
-        const q1data = await getDocs(q1)
-        const q2data = await getDocs(q2)
-        const data = q1data.docs.concat(q2data.docs)
+        } else if (type == "genres") {
+            const genres = data.docs.map((doc) => {
+                const genreData = doc.data();
+                genreData.id = doc.id;
+                return genreData;
+            });
 
-        const movies = data.map((doc) => {
-            const movieData = doc.data();
-            movieData.id = doc.id;
-            return movieData;
-        });
-        return new Response(JSON.stringify(movies));
+            return new Response(JSON.stringify(genres));
+
+        } else if (type == "actors") {
+
+            const actors = data.docs.map((doc) => {
+                const actorData = doc.data();
+                actorData.id = doc.id;
+                return actorData;
+            });
+            return new Response(JSON.stringify(actors));
+        }
+
     } catch (error) {
         return new Response("Error", { status: 500 })
     }

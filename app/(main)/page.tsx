@@ -10,6 +10,8 @@ import { Movie } from "../types/Movie";
 import { Sponsored } from "../types/Sponsored";
 import { auth } from "@/firebase/config";
 import ImageCarousel from "../components/ImageCarousel";
+import { Genre } from "../types/Genre";
+import { Actor } from "../types/Actor";
 
 
 export default function Home() {
@@ -17,6 +19,9 @@ export default function Home() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
+  const [actors, setActors] = useState<Actor[]>([]);
+
   const [sponsors, setSponsors] = useState<Sponsored[]>([]);
 
 
@@ -27,6 +32,22 @@ export default function Home() {
       });
       const data = await res.json();
       setMovies(data);
+    };
+
+    const fetchActors = async () => {
+      const res = await fetch("/api/actors", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setActors(data);
+    };
+
+    const fetchGenres = async () => {
+      const res = await fetch("/api/genres", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setGenres(data);
     };
 
     const fetchSponsors = async () => {
@@ -41,6 +62,8 @@ export default function Home() {
       redirect("/signin");
     } else {
       fetchMovies();
+      fetchActors();
+      fetchGenres();
       fetchSponsors();
     }
   }, [notLoggedIn]);
@@ -68,7 +91,13 @@ export default function Home() {
                 <ImageCarousel images={sponsors} />
               </div>
           <section className="-mt-[22%] backdrop-blur-sm bg-slate-950/30">
-            <MovieScrollArea title="For You" movies={movies} />
+            <MovieScrollArea title="For You" movies={movies} actors={[]} genres={[]} />
+          </section>
+          <section>
+            <MovieScrollArea title="Genres" movies={[]} actors={[]} genres={genres} />
+          </section>
+          <section>
+            <MovieScrollArea title="Actors" movies={[]} actors={actors} genres={[]} />
           </section>
           <div>{user?.email}</div>
           <button onClick={() => signOut(auth)}>Logout</button>
