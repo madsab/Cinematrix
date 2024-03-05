@@ -21,6 +21,9 @@ export default function Home() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [actors, setActors] = useState<Actor[]>([]);
+  const [action, setAction] = useState<Movie[]>([]);
+  const [drama, setDrama] = useState<Movie[]>([]);
+  const [comedy, setComedy] = useState<Movie[]>([]);
 
   const [sponsors, setSponsors] = useState<Sponsored[]>([]);
 
@@ -32,6 +35,30 @@ export default function Home() {
       });
       const data = await res.json();
       setMovies(data);
+    };
+
+    const fetchDrama = async () => {
+      const res = await fetch("/api/genresPopular?genre=Drama", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setDrama(data);
+    };
+    const fetchComedy = async () => {
+      const res = await fetch("/api/genresPopular?genre=Comedy", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setComedy(data);
+    };
+
+
+    const fetchAction = async () => {
+      const res = await fetch("/api/genresPopular?genre=Action", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setAction(data);
     };
 
     const fetchActors = async () => {
@@ -65,6 +92,9 @@ export default function Home() {
       fetchActors();
       fetchGenres();
       fetchSponsors();
+      fetchAction();
+      fetchDrama();
+      fetchComedy();
     }
   }, [notLoggedIn]);
 
@@ -94,11 +124,21 @@ export default function Home() {
             <MovieScrollArea title="For You" movies={movies} actors={[]} genres={[]} />
           </section>
           <section>
+            <MovieScrollArea title="Action" movies={action} actors={[]} genres={[]} />
+          </section>
+          <section>
+            <MovieScrollArea title="Drama" movies={drama} actors={[]} genres={[]} />
+          </section>
+          <section>
+            <MovieScrollArea title="Comedy" movies={comedy} actors={[]} genres={[]} />
+          </section>
+          <section>
             <MovieScrollArea title="Genres" movies={[]} actors={[]} genres={genres} />
           </section>
           <section>
             <MovieScrollArea title="Actors" movies={[]} actors={actors} genres={[]} />
           </section>
+          
           <div>{user?.email}</div>
           <button onClick={() => signOut(auth)}>Logout</button>
         </div>
@@ -106,4 +146,7 @@ export default function Home() {
       )}
     </main>
   );
+
+
+
 }
