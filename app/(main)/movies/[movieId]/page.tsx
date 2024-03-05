@@ -1,13 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MovieButton from "../../../components/atoms/Moviebutton";
 import { Movie } from "../../../types/Movie";
 import { auth } from "@/firebase/config";
 import { redirect } from "next/navigation";
-import Stars from "@/app/components/atoms/Stars";
+import Stars, { StarsRef } from "@/app/components/atoms/Stars";
 import Button from "@/app/components/atoms/Button";
 
 const MoviePage = ({ params }: { params: { movieId: string } }) => {
+  const ref = useRef<StarsRef>(null);
   const [movie, setMovie] = useState<Movie>();
   const [open, setOpen] = useState(false);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
@@ -45,12 +46,19 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
   });
 
   const saveToDb = () => {
-    console.log("saving to db");
+    ref.current && ref.current.saveToDb();
     setShowButton(false);
   };
 
   const handleClick = () => {
     setShowButton(true);
+  };
+
+  const saveWatchedToDb = async (method: string) => {
+    await fetch(`/api/users/${userId}/movies?fieldType=Watched`, {
+      method: method,
+      body: JSON.stringify({ movieImdbId: movie?.imdbid }),
+    });
   };
 
   return (
@@ -89,6 +97,7 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
                   onClick={handleClick}
                   movieImdbId={movie.imdbid}
                   userId={userId}
+                  ref={ref}
                 />
                 <div className="space-y-4">
                   <MovieButton onClick={handleClick} />
