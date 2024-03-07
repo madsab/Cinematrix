@@ -37,7 +37,10 @@ const Navbar = () => {
                 </div>
             </div>
             <div className="flex-1 flex justify-end items-center">
+                <div className=" flex justify-evenly items-center">
+                <Link className=" mr-5" href="/favourites">My Favourites</Link>
                 <Link href="/profile"><Image src={Avatar} width={60} height={60} alt={"Avatar"}/></Link>
+                </div>
             </div>
         </div>
     )
