@@ -10,12 +10,17 @@ import { Movie } from "../types/Movie";
 import { Sponsored } from "../types/Sponsored";
 import { auth } from "@/firebase/config";
 import ImageCarousel from "../components/ImageCarousel";
+import ImgCarousel from "../components/ImgCarousel";
 import { Genre } from "../types/Genre";
 import { Actor } from "../types/Actor";
-import { Carousel } from 'flowbite';
+import { Carousel } from 'flowbite-react';
+import { useRouter } from "next/navigation";
+
 
 
 export default function Home() {
+  const router = useRouter();
+
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
@@ -81,7 +86,7 @@ export default function Home() {
     }
   });
 
-  const carousel = new Carousel(carouselElement, sponsors);
+  //const carousel = new Carousel(carouselElement, sponsors);
 
   return (
     <main className="">
@@ -89,14 +94,8 @@ export default function Home() {
         <div>Loading</div>
       ) : (
         <div>
-            <div className="relative">
-              <div>
-                <carouselElement></carouselElement>
-              </div>
-              <div className="relative container mx-auto mt-8 flex justify-content z-0">
-                <ImageCarousel images={sponsors} />
-              </div>
-          <section className="-mt-[22%] backdrop-blur-sm bg-slate-950/30">
+          <ImgCarousel/>
+          <section className="-mt-[5%] backdrop-blur-sm bg-slate-950/30">
             <MovieScrollArea title="For You" movies={movies} actors={[]} genres={[]} />
           </section>
           <section>
@@ -108,7 +107,7 @@ export default function Home() {
           <div>{user?.email}</div>
           <button onClick={() => signOut(auth)}>Logout</button>
         </div>
-        </div>
+
       )}
     </main>
   );
