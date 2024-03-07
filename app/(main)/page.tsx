@@ -13,7 +13,6 @@ import ImageCarousel from "../components/ImageCarousel";
 import { Genre } from "../types/Genre";
 import { Actor } from "../types/Actor";
 
-
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<FirebaseUser | null>(null);
@@ -27,7 +26,6 @@ export default function Home() {
   const [comedy, setComedy] = useState<Movie[]>([]);
 
   const [sponsors, setSponsors] = useState<Sponsored[]>([]);
-
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -52,7 +50,6 @@ export default function Home() {
       const data = await res.json();
       setComedy(data);
     };
-
 
     const fetchAction = async () => {
       const res = await fetch("/api/genresPopular?genre=Action", {
@@ -126,40 +123,72 @@ export default function Home() {
         <div>Loading</div>
       ) : (
         <div>
-            <div className="relative">
-              <div className="relative container mx-auto mt-8 flex justify-content z-0">
-                <ImageCarousel images={sponsors} />
-              </div>
-          <section className="-mt-[22%] backdrop-blur-sm bg-slate-950/30">
-            <MovieScrollArea title="For You" movies={movies} actors={[]} genres={[]} />
-          </section>
-          <section>
-            <MovieScrollArea title="Movies best skipped" movies={badMovies} actors={[]} genres={[]} />
-          </section>
-          <section>
-            <MovieScrollArea title="Action" movies={action} actors={[]} genres={[]} />
-          </section>
-          <section>
-            <MovieScrollArea title="Drama" movies={drama} actors={[]} genres={[]} />
-          </section>
-          <section>
-            <MovieScrollArea title="Comedy" movies={comedy} actors={[]} genres={[]} />
-          </section>
-          <section>
-            <MovieScrollArea title="Genres" movies={[]} actors={[]} genres={genres} />
-          </section>
-          <section>
-            <MovieScrollArea title="Actors" movies={[]} actors={actors} genres={[]} />
-          </section>
-          
-          <div>{user?.email}</div>
-          <button onClick={() => signOut(auth)}>Logout</button>
-        </div>
+          <div className="relative">
+            <div className="relative container mx-auto mt-8 flex justify-content z-0">
+              <ImageCarousel images={sponsors} />
+            </div>
+            <section className="-mt-[22%] backdrop-blur-sm bg-slate-950/30">
+              <MovieScrollArea
+                title="For You"
+                movies={movies}
+                actors={[]}
+                genres={[]}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Action"
+                movies={action}
+                actors={[]}
+                genres={[]}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Drama"
+                movies={drama}
+                actors={[]}
+                genres={[]}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Comedy"
+                movies={comedy}
+                actors={[]}
+                genres={[]}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Movies so bad, you have to watch them!"
+                movies={badMovies}
+                actors={[]}
+                genres={[]}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Genres"
+                movies={[]}
+                actors={[]}
+                genres={genres}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Actors"
+                movies={[]}
+                actors={actors}
+                genres={[]}
+              />
+            </section>
+
+            <div>{user?.email}</div>
+            <button onClick={() => signOut(auth)}>Logout</button>
+          </div>
         </div>
       )}
     </main>
   );
-
-
-
 }
