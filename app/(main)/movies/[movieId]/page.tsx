@@ -19,13 +19,11 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
 
   useEffect(() => {
     const fetchMovies = async () => {
-      const res = await fetch("/api/movies", {
+      const res = await fetch("/api/getMovieByID?id=" + params.movieId, {
         method: "GET",
       });
       const data = await res.json();
-      console.log(data);
-      const foundMovie = data.find((m: Movie) => m.id == params.movieId);
-      setMovie(foundMovie);
+      setMovie(data);
     };
     if (notLoggedIn) {
       redirect("/signin");
