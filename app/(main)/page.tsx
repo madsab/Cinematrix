@@ -86,8 +86,6 @@ export default function Home() {
     }
   });
 
-  //const carousel = new Carousel(carouselElement, sponsors);
-
   return (
     <main className="">
       {loading ? (
