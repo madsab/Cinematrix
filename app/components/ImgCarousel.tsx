@@ -11,7 +11,6 @@ const ImgCarousel =()=>{
 
     const [sponsors, setSponsors] = useState<Sponsored[]>([]);
 
-
     useEffect(() => {
         const fetchSponsors = async () => {
             const res = await fetch("/api/sponsored", {
@@ -25,10 +24,10 @@ const ImgCarousel =()=>{
 
     return (
             <div className="relative container mx-auto mt-3 flex justify-content z-0 h-[35rem] w-full ">    
-                <Carousel relative className="h-full" slideInterval={5000} leftControl=" " rightControl=" ">
+                <Carousel className="h-full" slideInterval={5000} leftControl=" " rightControl=" ">
                     {sponsors.map((image,index) => (
                         <div key={index}>
-                            <img src={image.poster} alt={'Slide ${index + 1}'} className="h-full w-full object-cover md:object-scale-up transition-transform"
+                            <img src={image.poster} alt={'Slide ${index + 1}'} className="h-full w-full object-cover md:object-scale-up hover:scale-105 transition-transform"
                             onClick={()=> router.push(`/movies/${image.movieId}`)}/>
                         </div>
                     ))}
