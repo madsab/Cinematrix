@@ -27,7 +27,7 @@ const ImageCarousel: React.FC<CarouselProps> = ({ images }) => {
         <div
             key={index}
             className={`h-2/3 w-full absolute inset-0 transition-opacity flex justify-center overflow-hidden ${
-                index === currentIndex && 'hidden'
+                index !== currentIndex && 'hidden'
             }`}
         >
           <img src={image.poster} alt={`Slide ${index + 1}`} className="h-full w-full object-cover md:object-scale-up hover:scale-105 transition-transform" 
