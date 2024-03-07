@@ -1,16 +1,24 @@
 import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface MovieButtonProps {
   onClick?: () => void;
+  alreadyWatched?: boolean;
 }
 
-export default function MovieButton({ onClick }: MovieButtonProps) {
+export default function MovieButton({
+  onClick,
+  alreadyWatched,
+}: MovieButtonProps) {
   const [clicked, setClicked] = useState(false);
   const handleClick = () => {
     setClicked(!clicked);
     onClick && onClick();
   };
+
+  useEffect(() => {
+    alreadyWatched && setClicked(alreadyWatched);
+  }, [alreadyWatched]);
 
   return (
     <button
