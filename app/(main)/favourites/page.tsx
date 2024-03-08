@@ -5,7 +5,7 @@ import { auth } from "@/firebase/config";
 // db can be imported from here
 import { useEffect, useState } from "react";
 
-const Profile = () => {
+const Favourites = () => {
   const [moviesWatched, setMoviesWatched] = useState<Movie[]>([]);
   const [moviesRated, setMoviesRated] = useState<Movie[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
@@ -45,13 +45,20 @@ const Profile = () => {
     fecthUserRatedMovies();
   }, [userId]);
   return (
-    <div className=" flex w-full mt-10">
-      <div className=" ml-20 w-4/5 space-y-6 grid">
-        <MovieScrollArea title="Favourite genres:" movies={moviesWatched} genres={[]} actors={[]}/>
-        <MovieScrollArea title="Favourite actors:" movies={moviesRated} genres={[]} actors={[]}/>
-        <MovieScrollArea title="Favourite directors:" movies={moviesRated} genres={[]} actors={[]}/>
+    <div className=" mt-10">
+      <div className=" flex justify-center">
+      <div className=" w-4/5 flex justify-around">
+        <div className="w-2/5">
+          <MovieScrollArea title="Favourite genres:" movies={moviesWatched} genres={[]} actors={[]}/>
+        </div>
+        <div className="w-2/5 ">
+          <MovieScrollArea title="Favourite actors:" movies={moviesRated} genres={[]} actors={[]}/>
+        </div>
       </div>
+      </div>
+      <MovieScrollArea title="Favourite actors:" movies={moviesRated} genres={[]} actors={[]}/>
+
     </div>
   );
 };
-export default Profile;
+export default Favourites;
