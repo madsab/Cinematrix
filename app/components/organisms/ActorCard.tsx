@@ -24,7 +24,7 @@ const ActorCard: FC<ActorCardProps> = ({
         alt={actor.name}
         width={150}
         height={200}
-        className="hover:cursor-pointer hover:scale-105 transition-transform"
+        className="hover:cursor-pointer hover:scale-191 transition-transform"
         style={{
           width: "100%",
           height: "auto",
