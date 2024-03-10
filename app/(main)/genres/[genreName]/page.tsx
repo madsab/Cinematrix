@@ -118,33 +118,48 @@ export default function GenrePage ({ params }: { params: { genreName: string } }
       {loading ? (
         <div>Loading</div>
       ) : (
-          <div className="relative">
+        <div className="flex justify-center flex-wrap">
+          <div className="relative flex justify-center flex-wrap mt-10 mb-10">
+            <Icon
+              icon={genre?.icon || ""}
+              width={400}
+              height={400}
+              className="text-5xl text-center text-white opacity-20 blur-sm	w-full"
+            />
+            <div className="flex items-center w-full justify-center space-x-2 -mt-96 z-10">
+              <h1 className="text-white underline text-6xl font-bold">{params.genreName}</h1>
               <Icon
-                icon={genre?.icon || ""}
-                width={500}
-                height={500}
-                className="absolute text-5xl text-center text-white top-2/3 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:scale-125 transition-transform opacity-50 "
+              icon={heart}
+              width={60}
+              height={60}
+              onClick={() => user && markAsLiked()}
+              className={cn(
+                "hover:cursor-pointer ease-linear duration-100 rounded-md",
+                isLiked ? "bg-white text-black" : "text-white")}
               />
-              <div className="flex items-center w-full py-10 justify-center space-x-2">
-                <h1 className="text-white text-5xl font-bold">{params.genreName}</h1>
-                <Icon
-                icon={heart}
-                width={50}
-                height={50}
-                onClick={() => user && markAsLiked()}
-                className={cn(
-                  "hover:cursor-pointer ease-linear duration-100 rounded-md",
-                  isLiked ? "bg-white text-black" : "text-white")}
-                />
-              </div>
-              <div className="relative w-full">
-              <MovieScrollArea
-                title={"Movies in the genre " + params.genreName}
-                movies={movies}
-                actors={[]}
-                genres={[]}
-              />
-              </div>
+            </div>
+          </div>
+          
+          <div className="relative w-full">
+            <MovieScrollArea
+              title={"Movies in the genre " + params.genreName}
+              movies={movies}
+              actors={[]}
+              genres={[]}
+            />
+            <MovieScrollArea
+              title={"Movies in the genre " + params.genreName}
+              movies={movies}
+              actors={[]}
+              genres={[]}
+            />
+            <MovieScrollArea
+              title={"Movies in the genre " + params.genreName}
+              movies={movies}
+              actors={[]}
+              genres={[]}
+            />
+          </div>
         </div>
       )}
     </main>
