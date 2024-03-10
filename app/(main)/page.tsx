@@ -95,13 +95,17 @@ export default function Home() {
       redirect("/signin");
     } else {
       fetchMovies();
-      fetchActors();
-      fetchGenres();
+      /*
       fetchBad();
       fetchSponsors();
       fetchAction();
       fetchDrama();
       fetchComedy();
+      */
+      fetchGenres();
+      fetchActors();
+
+
     }
   }, [notLoggedIn]);
 

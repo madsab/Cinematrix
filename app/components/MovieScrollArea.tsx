@@ -32,6 +32,10 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   const [showRating, setShowRating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [userMovieIDs, setUserMoviesIDs] = useState<string[]>();
+  const [genreIDs, setgenreIDs] = useState<string[]>();
+  const [actorIDs, setActorIDs] = useState<string[]>();
+  const [directorIDs, setDirectorIDs] = useState<string[]>();
+
 
   const closeRating = () => {
     setShowRating(!showRating);
@@ -67,7 +71,55 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       const data = await res.json();
       setUserMoviesIDs(data);
     };
+
+    const fetchUserGenres = async () => {
+      const res = await fetch(
+        `/api/users/${userId}/genres?type=ID`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      setgenreIDs(data);
+    };
+
+    const fetchUserActors = async () => {
+      const res = await fetch(
+        `/api/users/${userId}/actors?type=ID&fieldType=actorsLiked`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      setActorIDs(data);
+    };
+
+    const fetchUserDirectors = async () => {
+      const res = await fetch(
+        `/api/users/${userId}/actors?type=ID&fieldType=directorsLiked`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      setDirectorIDs(data);
+    };
+
     userId && fecthUserWacthedMovies();
+    userId && fetchUserGenres();
+    userId && fetchUserActors();
+    userId && fetchUserDirectors();
+
+
   }, [userId]);
 
   return (
@@ -94,16 +146,19 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                   key={index}
                   movie={movie}
                   alreadyWatched={
-                    userMovieIDs ? userMovieIDs?.includes(movie.imdbid) : false
+                    userMovieIDs ? userMovieIDs.includes(movie.imdbid) : false
                   }
                 />
               ))}
 
               {genres && genres instanceof Array && genres.length != 0 && 
-              genres.map((genreName, index) => (
+              genres.map((genre, index) => (
                 <GenreCard 
                 key={index}
-                genre={genreName} 
+                genre={genre} 
+                liked={
+                  genreIDs ? genreIDs.includes(genre.id) : false
+                }
                 />
               ))}
 
@@ -112,6 +167,9 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                 <ActorCard
                 key={index}
                   actor={actor}
+                  liked={
+                    (actorIDs || directorIDs) ? ((actorIDs || []).concat(directorIDs || [])).includes(actor.id) : false
+                  }
                 />
                 ))}
 
@@ -124,7 +182,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <div className="absolute top-0 left-0 h-full w-full shadow-inner-x pointer-events-none "></div>
+        <div className="absolute top-0 left-0 h-full w-full pointer-events-none "></div>
       </div>
     </div>
   );
