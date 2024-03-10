@@ -5,6 +5,8 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/flowbite/**/*.js",
+    'node_modules/flowbite-react/lib/esm/**/*.js',
   ],
   theme: {
     extend: {
@@ -24,7 +26,10 @@ const config: Config = {
         "inner-x": "inset 0px 0px 15px 10px rgba(0, 0, 0, 0.5);",
     },
    },
-  plugins: [],
+  plugins: [
+    require('flowbite/plugin')
+  ],
+  
 }
 };
 

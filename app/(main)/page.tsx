@@ -9,11 +9,15 @@ import { User as FirebaseUser } from "firebase/auth";
 import { Movie } from "../types/Movie";
 import { Sponsored } from "../types/Sponsored";
 import { auth } from "@/firebase/config";
-import ImageCarousel from "../components/ImageCarousel";
+import ImgCarousel from "../components/ImgCarousel";
 import { Genre } from "../types/Genre";
 import { Actor } from "../types/Actor";
+import { useRouter } from "next/navigation";
+
 
 export default function Home() {
+  const router = useRouter();
+
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
@@ -127,11 +131,8 @@ export default function Home() {
         <div>Loading</div>
       ) : (
         <div>
-          <div className="relative">
-            <div className="relative container mx-auto mt-8 flex justify-content z-0">
-              <ImageCarousel images={sponsors} />
-            </div>
-            <section className="-mt-[22%] backdrop-blur-sm bg-slate-950/30">
+            <ImgCarousel/>
+            <section className="-mt-[5%] backdrop-blur-sm bg-slate-950/30">
               <MovieScrollArea
                 title="For You"
                 movies={movies}
@@ -190,8 +191,7 @@ export default function Home() {
 
             <div>{user?.email}</div>
             <button onClick={() => signOut(auth)}>Logout</button>
-          </div>
-        </div>
+            </div>
       )}
     </main>
   );
