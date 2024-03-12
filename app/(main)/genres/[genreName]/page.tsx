@@ -147,18 +147,6 @@ export default function GenrePage ({ params }: { params: { genreName: string } }
               actors={[]}
               genres={[]}
             />
-            <MovieScrollArea
-              title={"Movies in the genre " + params.genreName}
-              movies={movies}
-              actors={[]}
-              genres={[]}
-            />
-            <MovieScrollArea
-              title={"Movies in the genre " + params.genreName}
-              movies={movies}
-              actors={[]}
-              genres={[]}
-            />
           </div>
         </div>
       )}
