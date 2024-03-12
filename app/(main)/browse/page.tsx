@@ -10,6 +10,7 @@ import { Movie } from "../../types/Movie";
 import { auth } from "@/firebase/config";
 import DropDownMenu from "@/app/components/DropDownMenu";
 import { Actor } from "../../types/Actor";
+import {redirect} from "next/navigation";
 
 export default function Browse(){
     const [loading, setLoading] = useState(true);
@@ -33,12 +34,17 @@ export default function Browse(){
       setActors(data);
     };
 
+    if (notLoggedIn) {
+      redirect("/signin")
+    }
+    else {
+      fetchActors().catch(console.error);
+      fetchMovies().catch(console.error);
+    }
 
-    fetchActors().catch(console.error);
-    fetchMovies().catch(console.error);
 
 
-  }, []);
+  }, [notLoggedIn]);
 
   auth.onAuthStateChanged((user) => {
     setLoading(false);
@@ -54,17 +60,25 @@ export default function Browse(){
 
   return (
       <main>
-        <div className="flex justify-between items-center mt-8 mb-5">
-          <h1 className="text-3xl font-bold ml-4">Browse Movies</h1>
+        {loading ? (
+                <div>Loading</div>
+            ) : (
+            <div>
+              <div className="flex justify-between items-center mt-8 mb-5">
+                <h1 className="text-3xl font-bold ml-4">Browse Movies</h1>
 
-          <div className="flex space-x-4">
-            {/* Add as many DropDownMenu components as needed */}
-            <DropDownMenu actors={actors} Title="Actors 1"/>
-            <DropDownMenu actors={actors} Title="Actors 2"/>
-            {/* Add more DropDownMenu components as needed */}
-          </div>
-        </div>
-        <MovieGridView movies={movies}/>
+                <div className="flex space-x-4">
+                  {/* Add as many DropDownMenu components as needed */}
+                  <DropDownMenu actors={actors} Title="Actors 1"/>
+                  <DropDownMenu actors={actors} Title="Actors 2"/>
+                  {/* Add more DropDownMenu components as needed */}
+                </div>
+              </div>
+              <MovieGridView movies={movies}/>
+              <div>{user?.email}</div>
+              <button onClick={() => signOut(auth)}>Logout</button>
+            </div>
+  )}
       </main>
   );
 };
