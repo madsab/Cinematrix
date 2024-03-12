@@ -12,7 +12,7 @@ export default function MainLayout({
   return (
     <>
     <Navbar />
-    <div className="mx-6">{children}</div>
+    <div className="">{children}</div>
     </>
   );
 }

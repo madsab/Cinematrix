@@ -9,13 +9,10 @@ import { User as FirebaseUser } from "firebase/auth";
 import { Movie } from "../types/Movie";
 import { Sponsored } from "../types/Sponsored";
 import { auth } from "@/firebase/config";
-import ImageCarousel from "../components/ImageCarousel";
 import ImgCarousel from "../components/ImgCarousel";
 import { Genre } from "../types/Genre";
 import { Actor } from "../types/Actor";
-import { Carousel } from 'flowbite-react';
 import { useRouter } from "next/navigation";
-
 
 
 export default function Home() {
@@ -25,11 +22,14 @@ export default function Home() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [badMovies, setBadMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [actors, setActors] = useState<Actor[]>([]);
+  const [action, setAction] = useState<Movie[]>([]);
+  const [drama, setDrama] = useState<Movie[]>([]);
+  const [comedy, setComedy] = useState<Movie[]>([]);
 
   const [sponsors, setSponsors] = useState<Sponsored[]>([]);
-
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -40,6 +40,38 @@ export default function Home() {
       setMovies(data);
     };
 
+    const fetchDrama = async () => {
+      const res = await fetch("/api/genresPopular?genre=Drama", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setDrama(data);
+    };
+    const fetchComedy = async () => {
+      const res = await fetch("/api/genresPopular?genre=Comedy", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setComedy(data);
+    };
+
+    const fetchAction = async () => {
+      const res = await fetch("/api/genresPopular?genre=Action", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setAction(data);
+    };
+
+    const fetchBad = async () => {
+      const res = await fetch("/api/genresPopular?genre=Bad", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setBadMovies(data);
+    };
+
+    /*
     const fetchActors = async () => {
       const res = await fetch("/api/actors", {
         method: "GET",
@@ -47,6 +79,7 @@ export default function Home() {
       const data = await res.json();
       setActors(data);
     };
+    */
 
     const fetchGenres = async () => {
       const res = await fetch("/api/genres", {
@@ -68,9 +101,15 @@ export default function Home() {
       redirect("/signin");
     } else {
       fetchMovies();
-      fetchActors();
-      fetchGenres();
+      fetchBad();
       fetchSponsors();
+      fetchAction();
+      fetchDrama();
+      fetchComedy();
+      fetchGenres();
+      //fetchActors();
+
+
     }
   }, [notLoggedIn]);
 
@@ -92,20 +131,59 @@ export default function Home() {
         <div>Loading</div>
       ) : (
         <div>
-          <ImgCarousel/>
-          <section className="-mt-[5%] backdrop-blur-sm bg-slate-950/30">
-            <MovieScrollArea title="For You" movies={movies} actors={[]} genres={[]} />
-          </section>
-          <section>
-            <MovieScrollArea title="Genres" movies={[]} actors={[]} genres={genres} />
-          </section>
-          <section>
-            <MovieScrollArea title="Actors" movies={[]} actors={actors} genres={[]} />
-          </section>
-          <div>{user?.email}</div>
-          <button onClick={() => signOut(auth)}>Logout</button>
-        </div>
+            <ImgCarousel/>
+            <section className="-mt-[5%] backdrop-blur-sm pt-5">
+              <MovieScrollArea
+                title="For You"
+                movies={movies}
+                actors={[]}
+                genres={[]}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Action"
+                movies={action}
+                actors={[]}
+                genres={[]}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Drama"
+                movies={drama}
+                actors={[]}
+                genres={[]}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Comedy"
+                movies={comedy}
+                actors={[]}
+                genres={[]}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Movies so bad, you have to watch them!"
+                movies={badMovies}
+                actors={[]}
+                genres={[]}
+              />
+            </section>
+            <section>
+              <MovieScrollArea
+                title="Our genres"
+                movies={[]}
+                actors={[]}
+                genres={genres}
+              />
+            </section>
 
+            <div>{user?.email}</div>
+            <button onClick={() => signOut(auth)}>Logout</button>
+            </div>
       )}
     </main>
   );
