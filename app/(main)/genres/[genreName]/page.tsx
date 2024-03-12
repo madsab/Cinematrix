@@ -14,6 +14,7 @@ import { auth } from "@/firebase/config";
 import { Genre } from "@/app/types/Genre";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import cn from "classnames";
+import MovieGridView from "@/app/components/MovieGridView";
 
 interface Dictionary {
   [Key: string]: number;
@@ -141,11 +142,8 @@ export default function GenrePage ({ params }: { params: { genreName: string } }
           </div>
           
           <div className="relative w-full">
-            <MovieScrollArea
-              title={"Movies in the genre " + params.genreName}
+            <MovieGridView
               movies={movies}
-              actors={[]}
-              genres={[]}
             />
           </div>
         </div>
