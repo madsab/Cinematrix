@@ -1,6 +1,7 @@
 
 import React, {useEffect, useRef, useState} from "react";
 import {Actor} from "@/app/types/Actor";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 
 interface DropDownMenuProps {
@@ -10,9 +11,10 @@ interface DropDownMenuProps {
 
 const DropDownMenu: React.FC<DropDownMenuProps> = (props) => {
     const [isOpen, setIsOpen] = useState(false);
-    const ButtonText = isOpen ? `${props.Title}  ^` : `${props.Title}  v`;
+    const ButtonText = isOpen ? `${props.Title}` : `${props.Title}`;
     const refDropdown = useRef<any>(null);
     const refButton = useRef<any>(null);
+    const icon = isOpen ? "tabler:arrow-up" : "tabler:arrow-down";
 
     const toggleDropdown = () => {
         console.log(`Nå ble selve knappen trykket ${props.Title}`)
@@ -46,13 +48,16 @@ const DropDownMenu: React.FC<DropDownMenuProps> = (props) => {
 
     return (
         <div className="dropdown ">
-            <button ref = {refButton} onClick={toggleDropdown} className="dropdown-toggle px-4 py-3 text-Button"
+            <button ref = {refButton} onClick={toggleDropdown} className="dropdown-toggle px-4 py-3 text-Button mt-auto flex"
                     style = {{
                       border: "1px solid #FFF",
                       borderRadius: "5px",
                       backgroundImage: "linear-gradient(to right, #000000 , #510A32)",
                     }}>
-                        {ButtonText}
+              <div>{ButtonText}</div>
+              <Icon icon = {icon}>
+
+              </Icon>
             </button>
 
             {isOpen && (

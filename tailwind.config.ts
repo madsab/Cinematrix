@@ -22,7 +22,7 @@ const config: Config = {
       },
 
       fontSize: {
-        'Button': ['22px', '13px'],
+        'Button': ['22px', '21px'],
       },
       boxShadow: {
         "inner-x": "inset 0px 0px 15px 10px rgba(0, 0, 0, 0.5);",
