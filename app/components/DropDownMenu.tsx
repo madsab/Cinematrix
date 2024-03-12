@@ -6,68 +6,67 @@ import {Actor} from "@/app/types/Actor";
 interface DropDownMenuProps {
     actors: Actor[];
     Title: string
-    // Define any props that the DropDownMenu component might receive
-    // For example, you might want to pass options or handle selection events
 }
 
 const DropDownMenu: React.FC<DropDownMenuProps> = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const ButtonText = isOpen ? `${props.Title}  ^` : `${props.Title}  v`;
-    const dropdownRef = useRef<HTMLDivElement>(null);
+    const refDropdown = useRef<any>(null);
+    const refButton = useRef<any>(null);
 
     const toggleDropdown = () => {
+        console.log(`Nå ble selve knappen trykket ${props.Title}`)
         setIsOpen(!isOpen);
     };
 
     const handleItemClick = (item: string) => {
-        // Handle the selected item, you can pass it to a parent component or perform any other action
         console.log(`Selected: ${item}`);
-        // Close the dropdown after selecting an item
         setIsOpen(false);
     };
 
+
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        // Click occurred outside the dropdown, close it
+      console.log(refDropdown.current)
+      console.log("HandleClickoutside kjører")
+      if (isOpen && refDropdown.current && !refDropdown.current.contains(event.target) && !refButton.current.contains(event.target)) {
+        console.log(refDropdown.current)
+        console.log("Funker som forventet")
         setIsOpen(false);
       }
     };
 
-    // Add click event listener to the document
-    document.addEventListener("click", handleClickOutside);
-
+    document.addEventListener("click", handleClickOutside, true);
     return () => {
-      // Remove the click event listener when the component is unmounted
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside, true);
     };
-  }, []);
+  }, [refDropdown, isOpen]);
 
 
     return (
-        <div className="dropdown">
-            <button onClick={toggleDropdown} className="dropdown-toggle"
+        <div className="dropdown ">
+            <button ref = {refButton} onClick={toggleDropdown} className="dropdown-toggle px-4 py-3 text-Button"
                     style = {{
                       border: "1px solid #FFF",
-                      padding: "8px 20px",
                       borderRadius: "5px",
                       backgroundImage: "linear-gradient(to right, #000000 , #510A32)",
                     }}>
                         {ButtonText}
-
             </button>
 
             {isOpen && (
-                <div className="dropdown-menu" style={{
-                  // position: "absolute",
-                  // top: "19%",
+                <div ref = {refDropdown} className="dropdown-menu mt-2" style={{
+                  position: "absolute",
+                  zIndex: "1",
                   backgroundImage: "linear-gradient(to right, #000000 , #510A32)",
-                  marginBottom: "7px",
-                }}>
-                  <div onClick={() => handleItemClick("Action")}>Action</div>
-                  <div onClick={() => handleItemClick("Another action")}>Another action</div>
-                  <div onClick={() => handleItemClick("Something else")}>Something else</div>
-                  <div onClick={() => handleItemClick("Something else2")}>Something else2</div>
+                  border: "2px solid #FFF",
+                  cursor: "pointer",
+                }} >
+                  <div className = "hover:bg-white hover:text-night p-1.5" onClick={() => handleItemClick("Action")}>Action</div>
+                  <div className = "hover:bg-white hover:text-night p-1.5" onClick={() => handleItemClick("Another action")}>Another action</div>
+                  <div className = "hover:bg-white hover:text-night p-1.5" onClick={() => handleItemClick("Something else")}>Something else</div>
+                  <div className = "hover:bg-white hover:text-night p-1.5" onClick={() => handleItemClick("Something else2")}>Something else2</div>
                 </div>
             )}
         </div>

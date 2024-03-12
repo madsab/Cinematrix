@@ -61,28 +61,36 @@ const MovieGridView: FC<MovieGridViewProps> = ({
     }, [userId]);
 
     return (
-        <div className={cn("p-4", className)}>
-            {(
-                <div>
-                    <h2 className="text-2xl font-bold mb-4">Browse</h2>
-                    <Separator />
+        <div className = "relative">
+            <PopUp open={showRating} onCancel={closeRating} onConfirm={handleConfirm}>
+                <div className="flex flex-col justify-center items-center">
+                    <p>{currentMovie?.title}</p>
+                    <Stars ref={ref} userId={userId} movieImdbId={currentMovie?.imdbid} />
                 </div>
-            )}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                {movies && movies.length > 0 ? (
-                    movies.map((movie, index) => (
-                        <MovieCard
-                            key={index}
-                            movie={movie}
-                            alreadyWatched={userMovieIDs ? userMovieIDs?.includes(movie.imdbid) : false}
-                            openRating={openRating(movie)}
-                        />
-                    ))
-                ) : (
-                    <div>No results</div>
+            </PopUp>
+            <div className={cn("p-4", className)}>
+                {(
+                    <div>
+                        <Separator />
+                    </div>
                 )}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    {movies && movies.length > 0 ? (
+                        movies.map((movie, index) => (
+                            <MovieCard
+                                key={index}
+                                movie={movie}
+                                alreadyWatched={userMovieIDs ? userMovieIDs?.includes(movie.imdbid) : false}
+                                openRating={openRating(movie)}
+                            />
+                        ))
+                    ) : (
+                        <div>No results</div>
+                    )}
+                </div>
             </div>
         </div>
+
     );
 };
 

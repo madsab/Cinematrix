@@ -54,8 +54,8 @@ export default function Browse(){
 
   return (
       <main>
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Browse Movies</h1>
+        <div className="flex justify-between items-center mt-8 mb-5">
+          <h1 className="text-3xl font-bold ml-4">Browse Movies</h1>
 
           <div className="flex space-x-4">
             {/* Add as many DropDownMenu components as needed */}

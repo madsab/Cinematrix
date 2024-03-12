@@ -20,6 +20,10 @@ const config: Config = {
         'grape': '#510A32',
         'night': '#2D142C'
       },
+
+      fontSize: {
+        'Button': ['22px', '13px'],
+      },
       boxShadow: {
         "inner-x": "inset 0px 0px 15px 10px rgba(0, 0, 0, 0.5);",
     },
