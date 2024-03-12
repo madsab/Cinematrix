@@ -127,7 +127,7 @@ export default function GenrePage ({ params }: { params: { genreName: string } }
               className="text-5xl text-center text-white opacity-20 blur-sm	w-full"
             />
             <div className="flex items-center w-full justify-center space-x-2 -mt-96 z-10">
-              <h1 className="text-white underline text-6xl font-bold">{params.genreName}</h1>
+              <h1 className="text-white text-6xl font-bold ">{params.genreName}</h1>
               <Icon
               icon={heart}
               width={60}

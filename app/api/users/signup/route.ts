@@ -7,6 +7,7 @@ export async function POST(req: Request, res: NextApiResponse) {
     await setDoc(doc(db, "users", userId), {
         moviesWatched: [],
         moviesRated: [],
+        moviesLiked: [],
         genresLiked: [],
         actorsLiked: [],
         directorsLiked: []

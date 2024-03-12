@@ -71,6 +71,7 @@ export default function Home() {
       setBadMovies(data);
     };
 
+    /*
     const fetchActors = async () => {
       const res = await fetch("/api/actors", {
         method: "GET",
@@ -78,6 +79,7 @@ export default function Home() {
       const data = await res.json();
       setActors(data);
     };
+    */
 
     const fetchGenres = async () => {
       const res = await fetch("/api/genres", {
@@ -99,15 +101,13 @@ export default function Home() {
       redirect("/signin");
     } else {
       fetchMovies();
-      /*
       fetchBad();
       fetchSponsors();
       fetchAction();
       fetchDrama();
       fetchComedy();
-      */
       fetchGenres();
-      fetchActors();
+      //fetchActors();
 
 
     }
@@ -132,7 +132,7 @@ export default function Home() {
       ) : (
         <div>
             <ImgCarousel/>
-            <section className="-mt-[5%] backdrop-blur-sm bg-slate-950/30">
+            <section className="-mt-[5%] backdrop-blur-sm pt-5">
               <MovieScrollArea
                 title="For You"
                 movies={movies}
@@ -174,18 +174,10 @@ export default function Home() {
             </section>
             <section>
               <MovieScrollArea
-                title="Genres"
+                title="Our genres"
                 movies={[]}
                 actors={[]}
                 genres={genres}
-              />
-            </section>
-            <section>
-              <MovieScrollArea
-                title="Actors"
-                movies={[]}
-                actors={actors}
-                genres={[]}
               />
             </section>
 
