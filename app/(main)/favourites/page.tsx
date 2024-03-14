@@ -1,5 +1,7 @@
 "use client";
+import Image from "@/node_modules/next/image"
 import MovieScrollArea from "@/app/components/MovieScrollArea";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import { Actor } from "@/app/types/Actor";
 import { Genre } from "@/app/types/Genre";
 import { Movie } from "@/app/types/Movie";
@@ -8,31 +10,35 @@ import { auth } from "@/firebase/config";
 import { useEffect, useState } from "react";
 
 const Favourites = () => {
-  const [moviesWatched, setMoviesWatched] = useState<Genre[]>([]);
-  const [moviesRated, setMoviesRated] = useState<Actor[]>([]);
+  const [favouriteGenres, setFavouriteGenres] = useState<Genre[]>([]);
+  const [likedActors, setlikedActors] = useState<Actor[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
+  const [likedMovies, setlikedMovies] = useState<Movie[]>([]);
+  const [likedDirectors, setlikedDirectors] = useState<Actor[]>([]);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUserId(user.uid);
-        fecthUserWacthedMovies();
+        fecthFavouriteGenres();
       }
     });
 
-    const fecthUserWacthedMovies = async () => {
+    const fecthFavouriteGenres = async () => {
       if (userId === null) return;
-      const res = await fetch(`/api/users/${userId}/genres`, {
+      const res = await fetch(`/api/users/${userId}/genres?fieldType=genresLiked`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
       const data = await res.json();
-      setMoviesWatched(data);
+      setFavouriteGenres(data);
     };
 
-    const fecthUserRatedMovies = async () => {
+    fecthFavouriteGenres();
+
+    const fecthlikedActors = async () => {
       if (userId === null) return;
       const res = await fetch(`/api/users/${userId}/actors?fieldType=actorsLiked`, {
         method: "GET",
@@ -41,24 +47,63 @@ const Favourites = () => {
         },
       });
       const data = await res.json();
-      setMoviesRated(data);
+      setlikedActors(data);
     };
 
-    fecthUserRatedMovies();
+    fecthlikedActors();
+    
+    const fetchlikedDirectors = async () => {
+      if (userId === null) return;
+      const res = await fetch(`/api/users/${userId}/actors?fieldType=directorsLiked`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+
+      setlikedDirectors(data);
+    };
+
+    fetchlikedDirectors();
+
+    const fetchlikedMovies = async () => {
+      if (userId === null) return;
+      const res = await fetch(`/api/users/${userId}/movies?fieldType=moviesLiked`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+
+      setlikedMovies(data);
+    }
+
+    fetchlikedMovies();
+    
   }, [userId]);
+
+  const email = auth.currentUser?.email;
+  const username = email?.split(/[@.]/)[0];
   return (
-    <div className=" mt-10">
-      <div className=" flex justify-center">
-      <div className=" w-4/5 flex justify-around">
-        <div className="w-2/5">
-          <MovieScrollArea title="Favourite genres:" movies={[]} genres={moviesWatched} actors={[]}/>
+    <div className="mt-5">
+      <div className="flex space-x-10">
+          <div className="w-1/2">
+            <MovieScrollArea className="bg-gradient-to-t from-black via-pink-950 to-black" title={<span className="flex items-center">Favourite genres &nbsp;<Icon icon="tabler:globe-filled"/> </span>} movies={[]} genres={favouriteGenres} actors={[]}/>
+          </div>
+          <div className="w-1/2">
+            <MovieScrollArea className="bg-gradient-to-t from-black via-pink-950 to-black" title={<span className="flex items-center">Favourite actors &nbsp;<Icon icon="tabler:user-heart"/> </span>} movies={[]} genres={[]} actors={likedActors}/>
+          </div>
+      </div>
+      <div className=" flex space-x-10">
+        <div className="w-1/2">
+          <MovieScrollArea className="bg-gradient-to-t from-black via-pink-950 to-black" title={<span className="flex items-center">Favourite movies &nbsp;<Icon icon="tabler:movie"/> </span>} movies={likedMovies} genres={[]} actors={[]}/>
         </div>
-        <div className="w-2/5 ">
-          <MovieScrollArea title="Favourite actors:" movies={[]} genres={[]} actors={moviesRated}/>
+        <div className="w-1/2">
+          <MovieScrollArea className="bg-gradient-to-t from-black via-pink-950 to-black" title={<span className="flex items-center">Favourite directors &nbsp;<Icon icon="game-icons:director-chair"/> </span>} movies={[]} genres={[]} actors={likedDirectors}/>
         </div>
       </div>
-      </div>
-      <MovieScrollArea title="Favourite actors:" movies={moviesRated} genres={[]} actors={[]}/>
 
     </div>
   );
