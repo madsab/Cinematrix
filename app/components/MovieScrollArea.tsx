@@ -15,11 +15,12 @@ import { Genre } from "../types/Genre";
 import TopMovieBadge from "@/app/components/organisms/TopMovieBadge";
 interface MovieScrollAreaProps {
   title?: string;
-  movies: Movie[];
-  actors: Actor[];
-  genres: Genre[];
+  movies?: Movie[];
+  actors?: Actor[];
+  genres?: Genre[];
   className?: string;
   isTopTen?: boolean;
+  userContent?: string[];
 }
 
 const MovieScrollArea: FC<MovieScrollAreaProps> = ({
@@ -29,12 +30,14 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   genres,
   className,
   isTopTen,
+  userContent,
 }) => {
   const ref = useRef<StarsRef>(null);
   const [currentMovie, setCurrentMovie] = useState<Movie>();
   const [showRating, setShowRating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [userMovieIDs, setUserMoviesIDs] = useState<string[]>();
+  const [userContentIDs, setUserContentIDs] = useState<string[]>();
+  const [directorIDs, setDirectorIDs] = useState<string[]>();
 
   const closeRating = () => {
     setShowRating(!showRating);
@@ -51,6 +54,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   };
 
   useEffect(() => {
+    setUserContentIDs(userContent);
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUserId(user.uid);
@@ -68,10 +72,54 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
         }
       );
       const data = await res.json();
-      setUserMoviesIDs(data);
+      setUserContentIDs(data);
     };
-    userId && fecthUserWacthedMovies();
-  }, [userId]);
+
+    const fetchUserGenres = async () => {
+      const res = await fetch(`/api/users/${userId}/genres?type=ID`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "force-cache",
+      });
+      const data = await res.json();
+      setUserContentIDs(data);
+    };
+
+    const fetchUserActors = async () => {
+      const res = await fetch(
+        `/api/users/${userId}/actors?type=ID&fieldType=actorsLiked`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      setUserContentIDs(data);
+    };
+
+    const fetchUserDirectors = async () => {
+      const res = await fetch(
+        `/api/users/${userId}/actors?type=ID&fieldType=directorsLiked`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      setDirectorIDs(data);
+    };
+
+    userId && movies && !userContent && fecthUserWacthedMovies();
+    userId && genres && !userContent && fetchUserGenres();
+    userId && actors && !userContent && fetchUserActors();
+    userId && actors && !userContent && fetchUserDirectors();
+  }, [userContent, actors, genres, movies, userId]);
 
   return (
     <div className="relative">
@@ -97,36 +145,55 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                 <MovieCard
                   openRating={openRating(movie)}
                   movie={movie}
-                  alreadyWatched={userMovieIDs ? userMovieIDs.includes(movie.imdbid) : false}
+                  alreadyWatched={
+                    userContentIDs
+                      ? userContentIDs.includes(movie.imdbid)
+                      : false
+                  }
                 />
               </div>
             ))
           }
 
-              {genres && genres instanceof Array && genres.length != 0 && 
-              genres.map((genreName, index) => (
-                <GenreCard 
-                genre={genreName} 
+            {genres &&
+              genres instanceof Array &&
+              genres.length != 0 &&
+              genres.map((genre, index) => (
+                <GenreCard
+                  key={index}
+                  genre={genre}
+                  liked={
+                    userContentIDs ? userContentIDs.includes(genre.id) : false
+                  }
                 />
               ))}
 
-              {actors && actors instanceof Array && actors.length != 0 && 
+            {actors &&
+              actors instanceof Array &&
+              actors.length != 0 &&
               actors.map((actor, index) => (
                 <ActorCard
+                  key={index}
                   actor={actor}
+                  liked={
+                    userContentIDs || directorIDs
+                      ? (userContentIDs || [])
+                          .concat(directorIDs || [])
+                          .includes(actor.id)
+                      : false
+                  }
                 />
-                ))}
+              ))}
 
-              {
-              !(movies && movies instanceof Array && movies.length != 0)
-              && !(genres && genres instanceof Array && genres.length != 0)
-              && !(actors && actors instanceof Array && actors.length != 0)
-              &&<div>No results</div>
-              }
+            {!(movies && movies instanceof Array && movies.length != 0) &&
+              !(genres && genres instanceof Array && genres.length != 0) &&
+              !(actors && actors instanceof Array && actors.length != 0) && (
+                <div>No results</div>
+              )}
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <div className="absolute top-0 left-0 h-full w-full shadow-inner-x pointer-events-none "></div>
+        <div className="absolute top-0 left-0 h-full w-full pointer-events-none "></div>
       </div>
     </div>
   );

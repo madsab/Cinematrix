@@ -3,7 +3,7 @@ import { arrayRemove, arrayUnion, collection, doc, getDocs, query, updateDoc, wh
 import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 
-type fieldType = "Watched" | "Rated" | null
+type fieldType = "Watched" | "Rated" | "Liked" | null
 type type = "ID" | null
 type movieID = string | null
 
@@ -21,9 +21,15 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
             return new Response(JSON.stringify({message: "Missing valid user, got: ", userID }), {status: 500})
         }
 
-        if (fieldType === "Watched") {
-            const moviesWatched = (await getDoc(userMoviesDB)).get("moviesWatched") as []
-            // Get all movie IDs watched by the user
+        if (fieldType === "Watched" || fieldType === "Liked") {
+            var dbName: string
+            if (fieldType === "Watched") {
+                dbName = "moviesWatched";
+            } else {
+                dbName = "moviesLiked"
+            }
+            const moviesWatched = (await getDoc(userMoviesDB)).get(dbName) as []
+            // Get all movie IDs watched/liked by the user
             if (type === "ID") {
                 return new Response(JSON.stringify(moviesWatched))
             }
@@ -40,7 +46,7 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
                 return new Response(JSON.stringify(movie))
             }
             const watchedMovies: any[] = []
-            //Had to add moviesWatched to an array to be able to use it in next query, or else moviesWatched would be empty.
+            //Had to add moviesWatched/Liked to an array to be able to use it in next query, or else moviesWatched/Liked would be empty.
             moviesWatched.forEach((movie) => {
                 watchedMovies.push(movie)
             })
@@ -78,6 +84,7 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
             return new Response(JSON.stringify(movies))
 
         }
+        
         return new Response(JSON.stringify({message: "Missing right parameters" }), {status: 500})
 
     } catch (error) {
@@ -99,6 +106,14 @@ export async function POST(req: NextRequest, params: {params: { id: string }}) {
         return new Response(JSON.stringify({message: "Movie added to watched"}), {status: 201})
     }
 
+    if (fieldType === "Liked") {
+        const { movieImdbId } = await req.json();
+        await updateDoc(userDoc, {
+            moviesLiked: arrayUnion(movieImdbId),
+        })
+        return new Response(JSON.stringify({message: "Movie added to liked"}), {status: 201})
+    }
+
     if (fieldType === "Rated") {
         const { movieImdbId, rating } = await req.json()
         console.log("MovieID: ", movieImdbId, "Rating: ", rating)
@@ -112,11 +127,21 @@ export async function POST(req: NextRequest, params: {params: { id: string }}) {
 }
 
 export async function DELETE(req: NextRequest, params: {params: { id: string }}, res: NextApiResponse) {
+    const fieldType = req.nextUrl.searchParams.get("fieldType")
+
     const { movieImdbId } = await req.json()
     const userDoc = doc(db, "users", params.params.id)
-    await updateDoc(userDoc, {
-        moviesWatched: arrayRemove(movieImdbId),
-    })
+    if (fieldType === "Watched") {
+        await updateDoc(userDoc, {
+            moviesWatched: arrayRemove(movieImdbId),
+        })
+    }
+
+    else if (fieldType === "Liked") {
+        await updateDoc(userDoc, {
+            moviesLiked: arrayRemove(movieImdbId),
+        })
+    }
     return new Response(JSON.stringify({message: "Deletion successful"}), {status: 200})
 }
 

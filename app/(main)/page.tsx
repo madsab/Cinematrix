@@ -9,28 +9,44 @@ import { User as FirebaseUser } from "firebase/auth";
 import { Movie } from "../types/Movie";
 import { Sponsored } from "../types/Sponsored";
 import { auth } from "@/firebase/config";
-import ImageCarousel from "../components/ImageCarousel";
+import ImgCarousel from "../components/ImgCarousel";
 import { Genre } from "../types/Genre";
 import { Actor } from "../types/Actor";
-
-
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [badMovies, setBadMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [actors, setActors] = useState<Actor[]>([]);
   const [action, setAction] = useState<Movie[]>([]);
   const [drama, setDrama] = useState<Movie[]>([]);
   const [comedy, setComedy] = useState<Movie[]>([]);
   const [PopularMovies, setPopularMovies] = useState<Movie[]>([]);
+  const [userWatchedMovies, setUserWatchedMovies] = useState<string[]>([]);
+  const [userLikedGenres, setUserLikedGenres] = useState<string[]>([]);
+  const [userLikedActors, setUserLikedActors] = useState<string[]>([]);
+  const [userLikedDirectors, setUserLikedDirectors] = useState<string[]>();
 
   const [sponsors, setSponsors] = useState<Sponsored[]>([]);
 
-
   useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      setLoading(false);
+
+      if (user) {
+        setUser(user);
+        setNotLoggedIn(false);
+      } else {
+        setNotLoggedIn(true);
+      }
+    });
+
     const fetchMovies = async () => {
       const res = await fetch("/api/movies", {
         method: "GET",
@@ -62,7 +78,6 @@ export default function Home() {
       setComedy(data);
     };
 
-
     const fetchAction = async () => {
       const res = await fetch("/api/genresPopular?genre=Action", {
         method: "GET",
@@ -71,6 +86,15 @@ export default function Home() {
       setAction(data);
     };
 
+    const fetchBad = async () => {
+      const res = await fetch("/api/genresPopular?genre=Bad", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setBadMovies(data);
+    };
+
+    /*
     const fetchActors = async () => {
       const res = await fetch("/api/actors", {
         method: "GET",
@@ -78,6 +102,7 @@ export default function Home() {
       const data = await res.json();
       setActors(data);
     };
+    */
 
     const fetchGenres = async () => {
       const res = await fetch("/api/genres", {
@@ -95,31 +120,78 @@ export default function Home() {
       setSponsors(data);
     };
 
+    const fecthUserWacthedMovies = async () => {
+      const res = await fetch(
+        `/api/users/${user?.uid}/movies?fieldType=Watched&type=ID`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      setUserWatchedMovies(data);
+    };
+
+    const fetchUserGenres = async () => {
+      const res = await fetch(`/api/users/${user?.uid}/genres?type=ID`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "force-cache",
+      });
+      const data = await res.json();
+      setUserLikedGenres(data);
+    };
+
+    const fetchUserActors = async () => {
+      const res = await fetch(
+        `/api/users/${user?.uid}/actors?type=ID&fieldType=actorsLiked`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      setUserLikedActors(data);
+    };
+
+    const fetchUserDirectors = async () => {
+      const res = await fetch(
+        `/api/users/${user?.uid}/actors?type=ID&fieldType=directorsLiked`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      setUserLikedDirectors(data);
+    };
+
     if (notLoggedIn) {
       redirect("/signin");
-    } else {
+    } else if (user) {
       fetchMovies();
-      fetchActors();
-      fetchGenres();
+      fetchBad();
       fetchSponsors();
       fetchAction();
       fetchDrama();
       fetchComedy();
       fetchPopularMovies();
+      fetchGenres();
+      fecthUserWacthedMovies();
+      fetchUserGenres();
+      fetchUserActors();
+      fetchUserDirectors();
+      //fetchActors();
     }
-  }, [notLoggedIn]);
-
-  auth.onAuthStateChanged((user) => {
-    setLoading(false);
-
-    if (user) {
-      console.log(user.uid);
-      setUser(user);
-      setNotLoggedIn(false);
-    } else {
-      setNotLoggedIn(true);
-    }
-  });
+  }, [notLoggedIn, user]);
 
   return (
     <main className="">
@@ -127,35 +199,52 @@ export default function Home() {
         <div>Loading</div>
       ) : (
         <div>
-            <div className="relative">
-              <div className="relative container mx-auto mt-8 flex justify-content z-0">
-                <ImageCarousel images={sponsors} />
-              </div>
+          <ImgCarousel />
               
-          <section className="-mt-[22%] backdrop-blur-sm bg-slate-950/30">
-            <MovieScrollArea title="For You" movies={movies} actors={[]} genres={[]} />
+          <section className="-mt-[5%] backdrop-blur-sm pt-5">
+            <MovieScrollArea
+              title="For You"
+              movies={movies}
+              userContent={userWatchedMovies}
+            />
 
             <MovieScrollArea title="Top 10 movies" movies={PopularMovies} actors={[ ]} genres={[]} isTopTen=      {true} />
             
-            <MovieScrollArea title="Action" movies={action} actors={[]} genres={[]} />
+            <MovieScrollArea
+              title="Action"
+              movies={action}
+              userContent={userWatchedMovies}
+            />
         
-            <MovieScrollArea title="Drama" movies={drama} actors={[]} genres={[]} />
+            <MovieScrollArea
+              title="Drama"
+              movies={drama}
+              userContent={userWatchedMovies}
+            />
          
-            <MovieScrollArea title="Comedy" movies={comedy} actors={[]} genres={[]} />
+            <MovieScrollArea
+              title="Comedy"
+              movies={comedy}
+              userContent={userWatchedMovies}
+            />
       
-            <MovieScrollArea title="Genres" movies={[]} actors={[]} genres={genres} />
+            <MovieScrollArea
+              title="Movies so bad, you have to watch them!"
+              movies={badMovies}
+              userContent={userWatchedMovies}
+            />
     
-            <MovieScrollArea title="Actors" movies={[]} actors={actors} genres={[]} />
+            <MovieScrollArea
+              title="Our genres"
+              genres={genres}
+              userContent={userLikedGenres}
+            />
           </section>
-          
+
           <div>{user?.email}</div>
           <button onClick={() => signOut(auth)}>Logout</button>
-        </div>
         </div>
       )}
     </main>
   );
-
-
-
 }
