@@ -3,18 +3,43 @@ import Image from "next/image";
 import GenreImg from "../../assets/images/genres.png";
 import cn from "classnames";
 import { useRouter } from "next/navigation";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Genre } from "@/app/types/Genre";
+import { auth } from "@/firebase/config";
 
 
 export interface GenreCardProps {
-    genre: Genre;
+  genre: Genre;
+  liked?: boolean;
   }
   
 const GenreCard: FC<GenreCardProps> = ({
-    genre,
+  genre,
+  liked = false
 }) => {
   const router = useRouter();
+  const userId = auth.currentUser?.uid;
+
+  const [isLiked, setLiked] = useState(false);
+  const heart = isLiked ? "tabler:heart" : "tabler:heart-off";
+
+  const markAsLiked = () => {
+    let method = !isLiked ? "POST" : "DELETE";
+    saveToDb(method);
+    setLiked(!isLiked);
+  };
+
+  const saveToDb = async (method: string) => {
+    await fetch(`/api/users/${userId}/genres`, {
+      method: method,
+      body: JSON.stringify({ genreID: genre.id }),
+    });
+  };
+
+  useEffect(() => {
+    liked && setLiked(true);
+  }, [liked]);
+
 
   return (
     <div className="flex flex-col items-center w-[150px] h-fit space-y-2">
@@ -44,11 +69,13 @@ const GenreCard: FC<GenreCardProps> = ({
         <p className="text-wrap italic">{genre.id}</p>
 
         <Icon
-          icon={"tabler:heart"}
+          icon={heart}
           width={20}
           height={20}
+          onClick={() => markAsLiked()}
           className={cn(
-            "hover:cursor-pointer ease-linear duration-100 rounded-md bg-white text-black"
+            "hover:cursor-pointer ease-linear duration-100 rounded-md",
+            isLiked ? "bg-white text-black" : "text-white"
           )}
         />
       </div>
