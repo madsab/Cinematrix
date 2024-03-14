@@ -13,7 +13,7 @@ import GenreCard from "./organisms/GenreCard";
 import ActorCard from "./organisms/ActorCard";
 import { Genre } from "../types/Genre";
 interface MovieScrollAreaProps {
-  title?: string;
+  title?: string|JSX.Element;
   movies: Movie[];
   actors: Actor[];
   genres: Genre[];
