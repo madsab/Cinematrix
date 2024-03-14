@@ -14,10 +14,11 @@ import ActorCard from "./organisms/ActorCard";
 import { Genre } from "../types/Genre";
 interface MovieScrollAreaProps {
   title?: string;
-  movies: Movie[];
-  actors: Actor[];
-  genres: Genre[];
+  movies?: Movie[];
+  actors?: Actor[];
+  genres?: Genre[];
   className?: string;
+  userContent?: string[];
 }
 
 const MovieScrollArea: FC<MovieScrollAreaProps> = ({
@@ -26,16 +27,14 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   actors,
   genres,
   className,
+  userContent,
 }) => {
   const ref = useRef<StarsRef>(null);
   const [currentMovie, setCurrentMovie] = useState<Movie>();
   const [showRating, setShowRating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [userMovieIDs, setUserMoviesIDs] = useState<string[]>();
-  const [genreIDs, setgenreIDs] = useState<string[]>();
-  const [actorIDs, setActorIDs] = useState<string[]>();
+  const [userContentIDs, setUserContentIDs] = useState<string[]>();
   const [directorIDs, setDirectorIDs] = useState<string[]>();
-
 
   const closeRating = () => {
     setShowRating(!showRating);
@@ -52,6 +51,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   };
 
   useEffect(() => {
+    setUserContentIDs(userContent);
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUserId(user.uid);
@@ -69,21 +69,19 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
         }
       );
       const data = await res.json();
-      setUserMoviesIDs(data);
+      setUserContentIDs(data);
     };
 
     const fetchUserGenres = async () => {
-      const res = await fetch(
-        `/api/users/${userId}/genres?type=ID`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await fetch(`/api/users/${userId}/genres?type=ID`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "force-cache",
+      });
       const data = await res.json();
-      setgenreIDs(data);
+      setUserContentIDs(data);
     };
 
     const fetchUserActors = async () => {
@@ -97,7 +95,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
         }
       );
       const data = await res.json();
-      setActorIDs(data);
+      setUserContentIDs(data);
     };
 
     const fetchUserDirectors = async () => {
@@ -114,13 +112,11 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       setDirectorIDs(data);
     };
 
-    userId && fecthUserWacthedMovies();
-    userId && fetchUserGenres();
-    userId && fetchUserActors();
-    userId && fetchUserDirectors();
-
-
-  }, [userId]);
+    userId && movies && !userContent && fecthUserWacthedMovies();
+    userId && genres && !userContent && fetchUserGenres();
+    userId && actors && !userContent && fetchUserActors();
+    userId && actors && !userContent && fetchUserDirectors();
+  }, [userContent, actors, genres, movies, userId]);
 
   return (
     <div className="relative">
@@ -139,46 +135,57 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       <div className="relative">
         <ScrollArea className={cn("whitespace-nowrap rounded-md", className)}>
           <div className="flex w-max space-x-8 p-4 z-0">
-            {movies && movies instanceof Array && movies.length != 0 &&
+            {movies &&
+              movies instanceof Array &&
+              movies.length != 0 &&
               movies.map((movie, index) => (
                 <MovieCard
                   openRating={openRating(movie)}
                   key={index}
                   movie={movie}
                   alreadyWatched={
-                    userMovieIDs ? userMovieIDs.includes(movie.imdbid) : false
+                    userContentIDs
+                      ? userContentIDs.includes(movie.imdbid)
+                      : false
                   }
                 />
               ))}
 
-              {genres && genres instanceof Array && genres.length != 0 && 
+            {genres &&
+              genres instanceof Array &&
+              genres.length != 0 &&
               genres.map((genre, index) => (
-                <GenreCard 
-                key={index}
-                genre={genre} 
-                liked={
-                  genreIDs ? genreIDs.includes(genre.id) : false
-                }
+                <GenreCard
+                  key={index}
+                  genre={genre}
+                  liked={
+                    userContentIDs ? userContentIDs.includes(genre.id) : false
+                  }
                 />
               ))}
 
-              {actors && actors instanceof Array && actors.length != 0 && 
+            {actors &&
+              actors instanceof Array &&
+              actors.length != 0 &&
               actors.map((actor, index) => (
                 <ActorCard
-                key={index}
+                  key={index}
                   actor={actor}
                   liked={
-                    (actorIDs || directorIDs) ? ((actorIDs || []).concat(directorIDs || [])).includes(actor.id) : false
+                    userContentIDs || directorIDs
+                      ? (userContentIDs || [])
+                          .concat(directorIDs || [])
+                          .includes(actor.id)
+                      : false
                   }
                 />
-                ))}
+              ))}
 
-              {
-              !(movies && movies instanceof Array && movies.length != 0)
-              && !(genres && genres instanceof Array && genres.length != 0)
-              && !(actors && actors instanceof Array && actors.length != 0)
-              &&<div>No results</div>
-              }
+            {!(movies && movies instanceof Array && movies.length != 0) &&
+              !(genres && genres instanceof Array && genres.length != 0) &&
+              !(actors && actors instanceof Array && actors.length != 0) && (
+                <div>No results</div>
+              )}
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
