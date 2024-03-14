@@ -21,6 +21,7 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
     const fetchMovies = async () => {
       const res = await fetch("/api/getMovieByID?id=" + params.movieId, {
         method: "GET",
+        cache: "force-cache",
       });
       const data = await res.json();
       setMovie(data);
