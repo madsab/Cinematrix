@@ -14,6 +14,7 @@ import { Genre } from "../types/Genre";
 import { Actor } from "../types/Actor";
 
 
+
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<FirebaseUser | null>(null);
@@ -24,6 +25,7 @@ export default function Home() {
   const [action, setAction] = useState<Movie[]>([]);
   const [drama, setDrama] = useState<Movie[]>([]);
   const [comedy, setComedy] = useState<Movie[]>([]);
+  const [PopularMovies, setPopularMovies] = useState<Movie[]>([]);
 
   const [sponsors, setSponsors] = useState<Sponsored[]>([]);
 
@@ -35,6 +37,14 @@ export default function Home() {
       });
       const data = await res.json();
       setMovies(data);
+    };
+
+    const fetchPopularMovies = async () => {
+      const res = await fetch("/api/PopularMovies", {
+        method: "GET",
+      });
+      const data = await res.json();
+      setPopularMovies(data);
     };
 
     const fetchDrama = async () => {
@@ -95,6 +105,7 @@ export default function Home() {
       fetchAction();
       fetchDrama();
       fetchComedy();
+      fetchPopularMovies();
     }
   }, [notLoggedIn]);
 
@@ -120,22 +131,20 @@ export default function Home() {
               <div className="relative container mx-auto mt-8 flex justify-content z-0">
                 <ImageCarousel images={sponsors} />
               </div>
+              
           <section className="-mt-[22%] backdrop-blur-sm bg-slate-950/30">
             <MovieScrollArea title="For You" movies={movies} actors={[]} genres={[]} />
-          </section>
-          <section>
+
+            <MovieScrollArea title="Top 10 movies" movies={PopularMovies} actors={[ ]} genres={[]} isTopTen=      {true} />
+            
             <MovieScrollArea title="Action" movies={action} actors={[]} genres={[]} />
-          </section>
-          <section>
+        
             <MovieScrollArea title="Drama" movies={drama} actors={[]} genres={[]} />
-          </section>
-          <section>
+         
             <MovieScrollArea title="Comedy" movies={comedy} actors={[]} genres={[]} />
-          </section>
-          <section>
+      
             <MovieScrollArea title="Genres" movies={[]} actors={[]} genres={genres} />
-          </section>
-          <section>
+    
             <MovieScrollArea title="Actors" movies={[]} actors={actors} genres={[]} />
           </section>
           

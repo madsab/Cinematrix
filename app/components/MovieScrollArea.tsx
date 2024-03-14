@@ -12,12 +12,14 @@ import { auth } from "@/firebase/config";
 import GenreCard from "./organisms/GenreCard";
 import ActorCard from "./organisms/ActorCard";
 import { Genre } from "../types/Genre";
+import TopMovieBadge from "@/app/components/organisms/TopMovieBadge";
 interface MovieScrollAreaProps {
   title?: string;
   movies: Movie[];
   actors: Actor[];
   genres: Genre[];
   className?: string;
+  isTopTen?: boolean;
 }
 
 const MovieScrollArea: FC<MovieScrollAreaProps> = ({
@@ -26,6 +28,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   actors,
   genres,
   className,
+  isTopTen,
 }) => {
   const ref = useRef<StarsRef>(null);
   const [currentMovie, setCurrentMovie] = useState<Movie>();
@@ -87,17 +90,18 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       <div className="relative">
         <ScrollArea className={cn("whitespace-nowrap rounded-md", className)}>
           <div className="flex w-max space-x-8 p-4 z-0">
-            {movies && movies instanceof Array && movies.length != 0 &&
-              movies.map((movie, index) => (
+          {movies && movies instanceof Array && movies.length != 0 &&
+            movies.map((movie, index) => (
+              <div className="relative inline-block px-2" key={index}>
+                {isTopTen && index < 10 && <TopMovieBadge rank={index + 1} />}
                 <MovieCard
                   openRating={openRating(movie)}
-                  key={index}
                   movie={movie}
-                  alreadyWatched={
-                    userMovieIDs ? userMovieIDs?.includes(movie.imdbid) : false
-                  }
+                  alreadyWatched={userMovieIDs ? userMovieIDs.includes(movie.imdbid) : false}
                 />
-              ))}
+              </div>
+            ))
+          }
 
               {genres && genres instanceof Array && genres.length != 0 && 
               genres.map((genreName, index) => (
