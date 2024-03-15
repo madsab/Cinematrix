@@ -52,7 +52,6 @@ const Profile = () => {
             </div>
             */}
       <div className=" ml-20 w-4/5 space-y-6">
-        {/* <MovieScrollArea title="Your ratings:" movies={[]} /> */}
         <MovieScrollArea title="Movies you've seen:" movies={moviesWatched} />
         <MovieScrollArea title="Movies you've rated:" movies={moviesRated} />
       </div>
