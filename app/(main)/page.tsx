@@ -13,6 +13,7 @@ import ImgCarousel from "../components/ImgCarousel";
 import { Genre } from "../types/Genre";
 import { Actor } from "../types/Actor";
 import { useRouter } from "next/navigation";
+import { calculateForYou } from "../algorithms/forYou";
 
 export default function Home() {
   const router = useRouter();
@@ -21,16 +22,13 @@ export default function Home() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [badMovies, setBadMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [actors, setActors] = useState<Actor[]>([]);
-  const [action, setAction] = useState<Movie[]>([]);
-  const [drama, setDrama] = useState<Movie[]>([]);
-  const [comedy, setComedy] = useState<Movie[]>([]);
   const [userWatchedMovies, setUserWatchedMovies] = useState<string[]>([]);
   const [userLikedGenres, setUserLikedGenres] = useState<string[]>([]);
   const [userLikedActors, setUserLikedActors] = useState<string[]>([]);
   const [userLikedDirectors, setUserLikedDirectors] = useState<string[]>();
+  const [forYouData, setForYouData] = useState<Movie[]>();
 
   const [sponsors, setSponsors] = useState<Sponsored[]>([]);
 
@@ -52,37 +50,6 @@ export default function Home() {
       });
       const data = await res.json();
       setMovies(data);
-    };
-
-    const fetchDrama = async () => {
-      const res = await fetch("/api/genresPopular?genre=Drama", {
-        method: "GET",
-      });
-      const data = await res.json();
-      setDrama(data);
-    };
-    const fetchComedy = async () => {
-      const res = await fetch("/api/genresPopular?genre=Comedy", {
-        method: "GET",
-      });
-      const data = await res.json();
-      setComedy(data);
-    };
-
-    const fetchAction = async () => {
-      const res = await fetch("/api/genresPopular?genre=Action", {
-        method: "GET",
-      });
-      const data = await res.json();
-      setAction(data);
-    };
-
-    const fetchBad = async () => {
-      const res = await fetch("/api/genresPopular?genre=Bad", {
-        method: "GET",
-      });
-      const data = await res.json();
-      setBadMovies(data);
     };
 
     /*
@@ -169,11 +136,7 @@ export default function Home() {
       redirect("/signin");
     } else if (user) {
       fetchMovies();
-      fetchBad();
       fetchSponsors();
-      fetchAction();
-      fetchDrama();
-      fetchComedy();
       fetchGenres();
       fecthUserWacthedMovies();
       fetchUserGenres();
@@ -183,6 +146,15 @@ export default function Home() {
     }
   }, [notLoggedIn, user]);
 
+  useEffect(() => {
+    const forYou = async () => {
+      const res = await calculateForYou(userWatchedMovies);
+      setForYouData(res);
+    };
+
+    !(userWatchedMovies.length == 0) && forYou();
+  }, [userWatchedMovies]);
+
   return (
     <main className="">
       {loading ? (
@@ -191,37 +163,40 @@ export default function Home() {
         <div>
           <ImgCarousel />
           <section className="-mt-[5%] backdrop-blur-sm pt-5">
-            <MovieScrollArea
-              title="For You"
-              movies={movies}
-              userContent={userWatchedMovies}
-            />
+            {!(userWatchedMovies.length == 0) && (
+              <MovieScrollArea
+                title="For You"
+                movies={forYouData}
+                userContent={userWatchedMovies}
+              />
+            )}
           </section>
+
           <section>
             <MovieScrollArea
               title="Action"
-              movies={action}
+              movies={movies.filter((movie) => movie.genre.includes("Action"))}
               userContent={userWatchedMovies}
             />
           </section>
           <section>
             <MovieScrollArea
               title="Drama"
-              movies={drama}
+              movies={movies.filter((movie) => movie.genre.includes("Drama"))}
               userContent={userWatchedMovies}
             />
           </section>
           <section>
             <MovieScrollArea
               title="Comedy"
-              movies={comedy}
+              movies={movies.filter((movie) => movie.genre.includes("Comedy"))}
               userContent={userWatchedMovies}
             />
           </section>
           <section>
             <MovieScrollArea
               title="Movies so bad, you have to watch them!"
-              movies={badMovies}
+              movies={movies.filter((movie) => movie.genre.includes("Bad"))}
               userContent={userWatchedMovies}
             />
           </section>
