@@ -2,7 +2,6 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Avatar from "../assets/images/avatar.png";
 import Image from "next/image";
 import React from "react";
-import Link from "next/link";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/config";
 import { useRouter } from "next/navigation";
