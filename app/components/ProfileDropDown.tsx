@@ -31,10 +31,10 @@ const ProfileDropDown = () => {
           </DropdownMenu.Item>
           <DropdownMenu.Separator className=" h-[1px] bg-slate-500 mx-2" />
           <DropdownMenu.Item
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/favourites")}
             className="hover:bg-slate-800 hover:cursor-pointer w-full p-4"
           >
-            You favorites
+            Your favorites
           </DropdownMenu.Item>
           <DropdownMenu.Separator className=" h-[1px] bg-slate-500 mx-2" />
           <DropdownMenu.Item
