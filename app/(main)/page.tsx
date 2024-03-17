@@ -192,45 +192,39 @@ export default function Home() {
           <ImgCarousel />
           <section className="-mt-[5%] backdrop-blur-sm pt-5">
             <MovieScrollArea
-              title="For You"
-              movies={movies}
-              userContent={userWatchedMovies}
-            />
+                title="For You"
+                movies={movies}
+                userContent={userWatchedMovies} actors={[]} genres={[]}            />
           </section>
           <section>
             <MovieScrollArea
-              title="Action"
-              movies={action}
-              userContent={userWatchedMovies}
-            />
+                title="Action"
+                movies={action}
+                userContent={userWatchedMovies} actors={[]} genres={[]}            />
           </section>
           <section>
             <MovieScrollArea
-              title="Drama"
-              movies={drama}
-              userContent={userWatchedMovies}
-            />
+                title="Drama"
+                movies={drama}
+                userContent={userWatchedMovies} actors={[]} genres={[]}            />
           </section>
           <section>
             <MovieScrollArea
-              title="Comedy"
-              movies={comedy}
-              userContent={userWatchedMovies}
-            />
+                title="Comedy"
+                movies={comedy}
+                userContent={userWatchedMovies} actors={[]} genres={[]}            />
           </section>
           <section>
             <MovieScrollArea
-              title="Movies so bad, you have to watch them!"
-              movies={badMovies}
-              userContent={userWatchedMovies}
-            />
+                title="Movies so bad, you have to watch them!"
+                movies={badMovies}
+                userContent={userWatchedMovies} actors={[]} genres={[]}            />
           </section>
           <section>
             <MovieScrollArea
-              title="Our genres"
-              genres={genres}
-              userContent={userLikedGenres}
-            />
+                title="Our genres"
+                genres={genres}
+                userContent={userLikedGenres} movies={[]} actors={[]}            />
           </section>
 
           <div>{user?.email}</div>
