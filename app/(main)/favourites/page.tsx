@@ -92,7 +92,7 @@ const Favourites = () => {
 
   return (
     <div className="">
-      <ProfileBanner username={upperUsername}/>
+      <ProfileBanner username={upperUsername} type={"Favourites"}/>
       <div className="flex space-x-10">
           <div className="w-1/2">
             <MovieScrollArea className="bg-gradient-to-t from-black from-20% via-pink-950 to-black to-80%" title={<span className="flex items-center">Favourite genres &nbsp;<Icon icon="tabler:globe-filled"/> </span>} movies={[]} genres={favouriteGenres} actors={[]}/>
