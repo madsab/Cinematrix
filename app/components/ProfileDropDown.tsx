@@ -10,7 +10,7 @@ const ProfileDropDown = () => {
   const router = useRouter();
 
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root modal={false}>
       <DropdownMenu.Trigger asChild>
         <button className="flex items-center justify-center">
           <Image src={Avatar} width={60} height={60} alt={"Avatar"} />
