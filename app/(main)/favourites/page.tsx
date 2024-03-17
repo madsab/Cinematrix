@@ -90,11 +90,6 @@ const Favourites = () => {
   const username = email?.split(/[@.]/)[0];
   const upperUsername = (username || '').charAt(0).toUpperCase() + (username || '').slice(1);
 
-  const numFavouriteGenres = favouriteGenres.length;
-  const numLikedActors = likedActors.length;
-  const numLikedMovies = likedMovies.length;
-  const numLikedDirectors = likedDirectors.length;
-
   return (
     <div className="">
       <ProfileBanner username={upperUsername}/>
