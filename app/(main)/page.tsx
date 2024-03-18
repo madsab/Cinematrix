@@ -200,9 +200,6 @@ export default function Home() {
               actors={[]}
             />
           </section>
-
-          <div>{user?.email}</div>
-          <button onClick={() => signOut(auth)}>Logout</button>
         </div>
       )}
     </main>
