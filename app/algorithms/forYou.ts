@@ -1,11 +1,9 @@
-import { FC } from "react";
 import { Movie } from "../types/Movie";
 
 
 
-const calculateForYou = async (userWathcedMoviesID: string[]) => {
-    const response = await fetch("/api/movies");
-    const movies = await response.json() as Movie[];
+const calculateForYou = (movies: Movie[], userWathcedMoviesID: string[]) => {
+
     movies.sort((a, b) => {
         if(a.rank - b.rank > 2) return -1;
         if(a.rank - b.rank < -2) return -1;
@@ -39,7 +37,7 @@ const calculateForYou = async (userWathcedMoviesID: string[]) => {
 // Iterate over each genre count and filter movies accordingly
     Object.keys(howManyOfEach).forEach(genre => {
         const count = howManyOfEach[genre];
-        const genreMovies = movies.filter(movie => movie.genre.includes(genre)).slice(0, count);
+        const genreMovies = movies.filter(movie => movie.genre.includes(genre) && !(userWathcedMoviesID.includes(movie.imdbid))).slice(0, count);
         filteredMovies.push(...genreMovies);
 });
 
