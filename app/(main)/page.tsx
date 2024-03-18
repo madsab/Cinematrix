@@ -196,6 +196,8 @@ export default function Home() {
               title="Our genres"
               genres={genres}
               userContent={userLikedGenres}
+              movies={[]}
+              actors={[]}
             />
           </section>
 
