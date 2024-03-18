@@ -70,14 +70,6 @@ export default function Home() {
       setGenres(data);
     };
 
-    const fetchSponsors = async () => {
-      const res = await fetch("/api/sponsored", {
-        method: "GET",
-      });
-      const data = await res.json();
-      setSponsors(data);
-    };
-
     const fecthUserWacthedMovies = async () => {
       const res = await fetch(
         `/api/users/${user?.uid}/movies?fieldType=Watched&type=ID`,
@@ -136,7 +128,6 @@ export default function Home() {
       redirect("/signin");
     } else if (user) {
       fetchMovies();
-      fetchSponsors();
       fetchGenres();
       fecthUserWacthedMovies();
       fetchUserGenres();
@@ -147,13 +138,13 @@ export default function Home() {
   }, [notLoggedIn, user]);
 
   useEffect(() => {
-    const forYou = async () => {
-      const res = await calculateForYou(userWatchedMovies);
+    const forYou = () => {
+      const res = calculateForYou(movies, userWatchedMovies);
       setForYouData(res);
     };
 
     !(userWatchedMovies.length == 0) && forYou();
-  }, [userWatchedMovies]);
+  }, [movies, userWatchedMovies]);
 
   return (
     <main className="">
