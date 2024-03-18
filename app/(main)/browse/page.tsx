@@ -3,21 +3,27 @@
 
 import { signOut } from "firebase/auth";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MovieGridView from '../../components/MovieGridView';
 import { User as FirebaseUser } from "firebase/auth";
 import { Movie } from "../../types/Movie";
 import { auth } from "@/firebase/config";
 import DropDownMenu from "@/app/components/DropDownMenu";
-import { Actor } from "../../types/Actor";
 import {redirect} from "next/navigation";
+import {Genre} from "@/app/types/Genre";
+import ButtonSort from "@/app/components/atoms/ButtonSort";
 
 export default function Browse(){
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<FirebaseUser | null>(null);
     const [notLoggedIn, setNotLoggedIn] = useState(false);
     const [movies, setMovies] = useState<Movie[]>([]);
-    const [actors, setActors] = useState<Actor[]>([]);
+    const [genres, setGenres] = useState<Genre[]>();
+    const [current, setCurrent] = useState('')
+    const [nameSort, setNameSort] = useState(false);
+    const [ratingSort, setRatingSort] = useState(true);
+    const [nameToogled, setNameToogled] = useState(false)
+    const [ratingToogled, setRatingToogled] = useState(true)
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -26,19 +32,19 @@ export default function Browse(){
       setMovies(data);
     };
 
-    const fetchActors = async () => {
-      const res = await fetch("/api/actors", {
+    const fetchGenres = async () => {
+      const res = await fetch("/api/genres", {
         method: "GET",
       });
       const data = await res.json();
-      setActors(data);
+      setGenres(data);
     };
 
     if (notLoggedIn) {
       redirect("/signin")
     }
     else {
-      fetchActors().catch(console.error);
+      fetchGenres().catch(console.error);
       fetchMovies().catch(console.error);
     }
 
@@ -58,6 +64,42 @@ export default function Browse(){
     }
   });
 
+
+  useEffect(() => {
+    if (nameSort) {
+      setNameToogled(true)
+      setRatingToogled(false)
+
+      if (ratingSort && nameSort) {
+        setRatingSort(!ratingSort)
+      }
+    }
+
+  }, [nameSort]);
+
+  function compareMovies(a : Movie, b: Movie) {
+    if (nameToogled) {
+      return nameSort ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title);
+    }
+
+    else if (ratingToogled) {
+      return !ratingSort ? Number(a.rating) - Number(b.rating) : Number(b.rating) - Number(a.rating) //Gjør om fra string til number
+    }
+    return 0;
+  }
+
+
+  useEffect(() => {
+    if (ratingSort) {
+      setRatingToogled(true)
+      setNameToogled(false)
+
+      if (nameSort  && ratingSort) {
+        setNameSort(!nameSort)
+      }
+    }
+  }, [ratingSort]);
+
   return (
       <main>
         {loading ? (
@@ -65,20 +107,26 @@ export default function Browse(){
             ) : (
             <div>
               <div className="flex justify-between items-center mt-8 mb-5">
-                <h1 className="text-3xl font-bold ml-4">Browse Movies</h1>
+                <h1 className="text-3xl font-bold ml-4">Browse {current} Movies</h1>
 
-                <div className="flex space-x-4">
-                  {/* Add as many DropDownMenu components as needed */}
-                  <DropDownMenu actors={actors} Title="Actors 1"/>
-                  <DropDownMenu actors={actors} Title="Actors 2"/>
-                  {/* Add more DropDownMenu components as needed */}
+                <div className="flex gap-8">
+                  <ButtonSort title='Name' droppedDown={nameSort} setDroppedDown={setNameSort} toogled = {nameToogled} useDot = {true}>
+
+                  </ButtonSort>
+                  <ButtonSort title='Rating' droppedDown={ratingSort} setDroppedDown={setRatingSort} toogled = {ratingToogled} useDot = {true}>
+
+                  </ButtonSort>
+                  <DropDownMenu genres={genres!} Title="Genres" current={current} setCurrent={setCurrent}/>
+
                 </div>
               </div>
-              <MovieGridView movies={movies}/>
+              <MovieGridView movies={current == '' ? movies.slice().sort((a,b) => compareMovies(a,b)) : movies.filter(movie => movie.genre.includes(current)).slice().sort((a,b) => compareMovies(a,b))
+              }/>
+              <div>--------------------</div>
               <div>{user?.email}</div>
               <button onClick={() => signOut(auth)}>Logout</button>
             </div>
-  )}
+        )}
       </main>
   );
 };

@@ -1,10 +1,10 @@
 import { db } from "@/firebase/config";
-import { collection, query, where, limit, getDocs } from "firebase/firestore";
+import {collection, query, where, limit, getDocs, orderBy} from "firebase/firestore";
 
 export async function GET() {
     try {
         const movieCollection = collection(db, "movies")
-        const q = query(movieCollection, where("year", ">=", 2010), limit(30))
+        const q = query(movieCollection, orderBy("rating", "desc"))
         const data = await getDocs(q)
         const movies = data.docs.map((doc) => {
             const movieData = doc.data();

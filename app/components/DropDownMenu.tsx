@@ -1,28 +1,38 @@
-
 import React, {useEffect, useRef, useState} from "react";
-import {Actor} from "@/app/types/Actor";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import {Genre} from "@/app/types/Genre";
 
 
 interface DropDownMenuProps {
-    actors: Actor[];
-    Title: string
+    genres: Genre[];
+    Title: string;
+    current: string
+    setCurrent: any
 }
 
 const DropDownMenu: React.FC<DropDownMenuProps> = (props) => {
     const [isOpen, setIsOpen] = useState(false);
-    const ButtonText = isOpen ? `${props.Title}` : `${props.Title}`;
+    const [ButtonText, setButtonText] = useState<string>(props.Title);
     const refDropdown = useRef<any>(null);
     const refButton = useRef<any>(null);
-    const icon = isOpen ? "tabler:arrow-up" : "tabler:arrow-down";
+    const icon = isOpen ? "tabler:arrow-big-up-filled" : "tabler:arrow-big-down";
+    const [resetFilter, setResetFilter] = useState(false)
 
     const toggleDropdown = () => {
-        console.log(`Nå ble selve knappen trykket ${props.Title}`)
         setIsOpen(!isOpen);
     };
 
     const handleItemClick = (item: string) => {
+        if (item != props.Title) {
+            setResetFilter(true);
+            props.setCurrent(item);
+        }
+        else {
+          setResetFilter(false)
+          props.setCurrent('')
+        }
         console.log(`Selected: ${item}`);
+        setButtonText(item);
         setIsOpen(false);
     };
 
@@ -30,11 +40,7 @@ const DropDownMenu: React.FC<DropDownMenuProps> = (props) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log(refDropdown.current)
-      console.log("HandleClickoutside kjører")
       if (isOpen && refDropdown.current && !refDropdown.current.contains(event.target) && !refButton.current.contains(event.target)) {
-        console.log(refDropdown.current)
-        console.log("Funker som forventet")
         setIsOpen(false);
       }
     };
@@ -46,34 +52,46 @@ const DropDownMenu: React.FC<DropDownMenuProps> = (props) => {
   }, [refDropdown, isOpen]);
 
 
-    return (
-        <div className="dropdown ">
-            <button ref = {refButton} onClick={toggleDropdown} className="dropdown-toggle px-4 py-3 text-Button mt-auto flex"
-                    style = {{
-                      border: "1px solid #FFF",
-                      borderRadius: "5px",
-                      backgroundImage: "linear-gradient(to right, #000000 , #510A32)",
-                    }}>
-              <div>{ButtonText}</div>
-              <Icon icon = {icon}>
 
-              </Icon>
-            </button>
+  return (
+        <div className="dropdown mr-16">
+          <button ref={refButton} onClick={toggleDropdown}
 
-            {isOpen && (
-                <div ref = {refDropdown} className="dropdown-menu mt-2" style={{
-                  position: "absolute",
-                  zIndex: "1",
-                  backgroundImage: "linear-gradient(to right, #000000 , #510A32)",
-                  border: "2px solid #FFF",
-                  cursor: "pointer",
-                }} >
-                  <div className = "hover:bg-white hover:text-night p-1.5" onClick={() => handleItemClick("Action")}>Action</div>
-                  <div className = "hover:bg-white hover:text-night p-1.5" onClick={() => handleItemClick("Another action")}>Another action</div>
-                  <div className = "hover:bg-white hover:text-night p-1.5" onClick={() => handleItemClick("Something else")}>Something else</div>
-                  <div className = "hover:bg-white hover:text-night p-1.5" onClick={() => handleItemClick("Something else2")}>Something else2</div>
+                  className="dropdown-toggle px-4 py-3 text-Button flex justify-between items-center  gap-3 w-44  bg-gradient-to-r from-black to-grape"
+                  style={{
+                    border: "2px solid #FFF",
+                    borderRadius: "5px",
+                  }}>
+            <div>{ButtonText}</div>
+            <Icon icon={icon}>
+
+            </Icon>
+          </button>
+
+          {isOpen && (
+              <div ref={refDropdown} className="dropdown-menu mt-2  w-44 bg-gradient-to-r from-black to-grape " style={{
+                position: "absolute",
+                zIndex: "1",
+                border: "2px solid #FFF",
+                cursor: "pointer",
+              }}>
+                {resetFilter && (<div className="hover:bg-white hover:text-night p-2.5 border-white border-solid border-b-2 italic"
+                     onClick={() => handleItemClick(props.Title)} >Reset Filter
+                </div>)}
+                <div className="hover:bg-white hover:text-night p-2.5 "
+                     onClick={() => handleItemClick("Action")}>Action
                 </div>
-            )}
+                <div className="hover:bg-white hover:text-night p-2.5"
+                     onClick={() => handleItemClick("Adventure")}>Adventure
+                </div>
+                <div className="hover:bg-white hover:text-night p-2.5"
+                     onClick={() => handleItemClick("Animation")}>Animation
+                </div>
+                <div className="hover:bg-white hover:text-night p-2.5"
+                     onClick={() => handleItemClick("Bad")}>Bad
+                </div>
+              </div>
+          )}
         </div>
     );
 };
