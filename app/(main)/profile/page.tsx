@@ -48,16 +48,15 @@ const Profile = () => {
 
   const email = auth.currentUser?.email;
   const username = email?.split(/[@.]/)[0];
-  const upperUsername = (username || '').charAt(0).toUpperCase() + (username || '').slice(1);
-
+  const upperUsername =
+    (username || "").charAt(0).toUpperCase() + (username || "").slice(1);
 
   return (
     <div className=" flex w-full mt-10 flex-wrap">
-      <ProfileBanner username={upperUsername} type={"Watchlist"}/>
+      <ProfileBanner username={upperUsername} type={"Watchlist"} />
       <div className=" ml-20 w-4/5 space-y-6">
-        {/* <MovieScrollArea title="Your ratings:" movies={[]} /> */}
-        <MovieScrollArea title="Movies you've seen:" movies={moviesWatched} actors={[]} genres={[]} />
-        <MovieScrollArea title="Movies you've rated:" movies={moviesRated} actors={[]} genres={[]} />
+        <MovieScrollArea title="Movies you've seen:" movies={moviesWatched} />
+        <MovieScrollArea title="Movies you've rated:" movies={moviesRated} />
       </div>
     </div>
   );
