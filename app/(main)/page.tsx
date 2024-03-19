@@ -130,8 +130,7 @@ export default function Home() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-        },
-        cache: "force-cache",
+        }
       });
       const data = await res.json();
       setUserLikedGenres(data);
@@ -224,6 +223,7 @@ export default function Home() {
             <MovieScrollArea
                 title="Our genres"
                 genres={genres}
+                userContent={userLikedGenres}
                 movies={[]} actors={[]}            />
           </section>
 

@@ -22,8 +22,6 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
 
         const genresLiked = (await getDoc(userGenresDB)).get("genresLiked") as []
 
-        console.log(JSON.stringify(genresLiked));
-
         if (type === "ID") {
             return new Response(JSON.stringify(genresLiked))
         }

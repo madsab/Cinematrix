@@ -72,7 +72,6 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
         }
       );
       const data = await res.json();
-      console.log(data);
       setUserMoviesIDs(data);
     };
 
@@ -98,7 +97,6 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
         },
       });
       const data = await res.json();
-      console.log(data);
       setDirectors(data);
     };
 
@@ -121,7 +119,6 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
         },
       });
       const data = await res.json();
-      console.log(data);
       setGenres(data);
     };
     
