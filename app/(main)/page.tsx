@@ -1,36 +1,24 @@
 "use client";
 
 import MovieScrollArea from "../components/MovieScrollArea";
-import { signOut } from "firebase/auth";
-
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { User as FirebaseUser } from "firebase/auth";
 import { Movie } from "../types/Movie";
-import { Sponsored } from "../types/Sponsored";
 import { auth } from "@/firebase/config";
 import ImgCarousel from "../components/ImgCarousel";
 import { Genre } from "../types/Genre";
-import { Actor } from "../types/Actor";
-import { useRouter } from "next/navigation";
 import { calculateForYou } from "../algorithms/forYou";
 
 export default function Home() {
-  const router = useRouter();
-
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [actors, setActors] = useState<Actor[]>([]);
   const [userWatchedMovies, setUserWatchedMovies] = useState<string[]>([]);
   const [userLikedGenres, setUserLikedGenres] = useState<string[]>([]);
-  const [userLikedActors, setUserLikedActors] = useState<string[]>([]);
-  const [userLikedDirectors, setUserLikedDirectors] = useState<string[]>();
   const [forYouData, setForYouData] = useState<Movie[]>();
-
-  const [sponsors, setSponsors] = useState<Sponsored[]>([]);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -51,16 +39,6 @@ export default function Home() {
       const data = await res.json();
       setMovies(data);
     };
-
-    /*
-    const fetchActors = async () => {
-      const res = await fetch("/api/actors", {
-        method: "GET",
-      });
-      const data = await res.json();
-      setActors(data);
-    };
-    */
 
     const fetchGenres = async () => {
       const res = await fetch("/api/genres", {
@@ -95,34 +73,6 @@ export default function Home() {
       setUserLikedGenres(data);
     };
 
-    const fetchUserActors = async () => {
-      const res = await fetch(
-        `/api/users/${user?.uid}/actors?type=ID&fieldType=actorsLiked`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await res.json();
-      setUserLikedActors(data);
-    };
-
-    const fetchUserDirectors = async () => {
-      const res = await fetch(
-        `/api/users/${user?.uid}/actors?type=ID&fieldType=directorsLiked`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await res.json();
-      setUserLikedDirectors(data);
-    };
-
     if (notLoggedIn) {
       redirect("/signin");
     } else if (user) {
@@ -130,9 +80,6 @@ export default function Home() {
       fetchGenres();
       fecthUserWacthedMovies();
       fetchUserGenres();
-      fetchUserActors();
-      fetchUserDirectors();
-      //fetchActors();
     }
   }, [notLoggedIn, user]);
 
