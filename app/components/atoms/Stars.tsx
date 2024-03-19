@@ -10,6 +10,7 @@ import cn from "classnames";
 export interface StarsProps {
   userId: string | null;
   movieImdbId: string | undefined;
+  onClick?: () => void;
 }
 
 export type StarsRef = {
@@ -18,7 +19,7 @@ export type StarsRef = {
 };
 
 const Stars = forwardRef<StarsRef, StarsProps>(
-  ({ userId, movieImdbId }: StarsProps, ref) => {
+  ({ userId, movieImdbId, onClick }: StarsProps, ref) => {
     const size = 30;
     const [originalRating, setOriginalRating] = useState(0); // Todo replace with actual rating
     const [currentRating, setCurrentRating] = useState(0);
@@ -84,6 +85,7 @@ const Stars = forwardRef<StarsRef, StarsProps>(
             height={size}
             onClick={() => {
               setOriginalRating(index + 1);
+              onClick && onClick();
             }}
             onMouseEnter={() => handleStarHover(index)}
             onMouseLeave={handleStarLeave}

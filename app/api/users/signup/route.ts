@@ -6,7 +6,11 @@ export async function POST(req: Request, res: NextApiResponse) {
     const { userId } = await req.json()
     await setDoc(doc(db, "users", userId), {
         moviesWatched: [],
-        moviesRated: []
+        moviesRated: [],
+        moviesLiked: [],
+        genresLiked: [],
+        actorsLiked: [],
+        directorsLiked: []
 
     })
     return res.status(200)

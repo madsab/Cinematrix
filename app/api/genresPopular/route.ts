@@ -1,18 +1,12 @@
 import { db } from "@/firebase/config";
 import { collection, query, where, limit, getDocs } from "firebase/firestore";
-import { NextApiRequest } from "next";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-    const userLimit  = req.nextUrl.searchParams.get("limit")
-    let q;
+    const type= req.nextUrl.searchParams.get('genre') as string;
     try {
         const movieCollection = collection(db, "movies")
-        if (userLimit){
-            q = query(movieCollection, limit(parseInt(userLimit)))
-        } else {
-            q = query(movieCollection)
-        }
+        const q = query(movieCollection, where("genre", "array-contains", type), limit(30))
         const data = await getDocs(q)
         const movies = data.docs.map((doc) => {
             const movieData = doc.data();

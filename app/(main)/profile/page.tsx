@@ -1,5 +1,6 @@
 "use client";
 import MovieScrollArea from "@/app/components/MovieScrollArea";
+import ProfileBanner from "@/app/components/ProfileBanner";
 import { Movie } from "@/app/types/Movie";
 import { auth } from "@/firebase/config";
 // db can be imported from here
@@ -44,15 +45,16 @@ const Profile = () => {
 
     fecthUserRatedMovies();
   }, [userId]);
+
+  const email = auth.currentUser?.email;
+  const username = email?.split(/[@.]/)[0];
+  const upperUsername =
+    (username || "").charAt(0).toUpperCase() + (username || "").slice(1);
+
   return (
-    <div className=" flex w-full mt-10">
-      {/* If filter is wanted on the profile page, this can be used for that component
-            <div className=" mt-10 w-1/5">
-                <h3 className=" text-center">Filter</h3>
-            </div>
-            */}
+    <div className=" flex w-full flex-wrap">
+      <ProfileBanner username={upperUsername} type={"Watchlist"} />
       <div className=" ml-20 w-4/5 space-y-6">
-        {/* <MovieScrollArea title="Your ratings:" movies={[]} /> */}
         <MovieScrollArea title="Movies you've seen:" movies={moviesWatched} />
         <MovieScrollArea title="Movies you've rated:" movies={moviesRated} />
       </div>
