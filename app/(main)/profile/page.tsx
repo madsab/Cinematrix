@@ -52,7 +52,7 @@ const Profile = () => {
     (username || "").charAt(0).toUpperCase() + (username || "").slice(1);
 
   return (
-    <div className=" flex w-full mt-10 flex-wrap">
+    <div className=" flex w-full flex-wrap">
       <ProfileBanner username={upperUsername} type={"Watchlist"} />
       <div className=" ml-20 w-4/5 space-y-6">
         <MovieScrollArea title="Movies you've seen:" movies={moviesWatched} />
