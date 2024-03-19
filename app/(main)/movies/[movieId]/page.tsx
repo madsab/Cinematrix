@@ -125,9 +125,9 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
 
     userId && fetchUserWacthedMovies();
     userId && checkIfMovieLiked();
-    fetchDirectors();
-    fetchActors();
-    fetchGenres();
+    userId && !directors && fetchDirectors();
+    userId && !actors && fetchActors();
+    userId && !genres && fetchGenres();
   }, [userId]);
 
   auth.onAuthStateChanged((user) => {
@@ -205,17 +205,6 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
                     <span className="font-bold">Rating:</span> {movie?.rating}
                     /10
                   </p>
-                  <div className="flex space-x-10 flex-wrap">
-              <div className="">
-                <MovieScrollArea title={"Directors"}movies={[]} actors={directors || []} genres={[]}/>
-              </div>
-              <div className="">
-                <MovieScrollArea title={"Actors"} movies={[]} actors={actors || []} genres={[]}/>
-              </div>
-              <div className="">
-                <MovieScrollArea title={"Genres"} movies={[]} actors={[]} genres={genres || []}/>
-              </div>
-            </div>
                 </div>
                 <div className="mt-8 space-y-2">
                   <p>
@@ -248,6 +237,36 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
                 </Button>
               </div>
             )}
+              <div className="flex space-x-10 flex-wrap justify-center">
+              {
+                directors && directors.length > 0 ? (
+                  <div className="">
+                    <MovieScrollArea title={"Directors"} movies={[]} actors={directors} genres={[]}/>
+                  </div>
+                ) : (
+                 <></> 
+                )
+              }
+              {
+                actors && actors.length > 0 ? (
+                  <div className="">
+                    <MovieScrollArea title={"Actors"} movies={[]} actors={actors} genres={[]}/>
+                  </div>
+                ) : (
+                 <></> 
+                )
+              }
+              {
+                genres && genres.length > 0 ? (
+                  <div className="">
+                    <MovieScrollArea title={"Genres"} movies={[]} actors={[]} genres={genres}/>
+                  </div>
+                ) : (
+                 <></> 
+                )
+              }
+
+            </div>
           </div>
         </div>
       )}

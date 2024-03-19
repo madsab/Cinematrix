@@ -33,11 +33,11 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   const [currentMovie, setCurrentMovie] = useState<Movie>();
   const [showRating, setShowRating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [userContentIDs, setUserContentIDs] = useState<string[]>([]);
-  const [genreIDs, setGenreIDs] = useState<string[]>([]);
-  const [movieIDs, setMovieIDs] = useState<string[]>([])
-  const [actorIDs, setActorIDs] = useState<string[]>([]);
-  const [directorIDs, setDirectorIDs] = useState<string[]>([]);
+  const [userContentIDs, setUserContentIDs] = useState<string[]>();
+  const [genreIDs, setGenreIDs] = useState<string[]>();
+  const [movieIDs, setMovieIDs] = useState<string[]>()
+  const [actorIDs, setActorIDs] = useState<string[]>();
+  const [directorIDs, setDirectorIDs] = useState<string[]>();
 
   const closeRating = () => {
     setShowRating(!showRating);
@@ -117,10 +117,10 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
     if (userContent)
       setUserContentIDs(userContent);
 
-    userId && movies && (!userContent || movieIDs.length > 0) && fecthUserWacthedMovies();
-    userId && genres && (!userContent || genreIDs.length > 0) && fetchUserGenres();
-    userId && actors && (!userContent || actorIDs.length > 0) && fetchUserActors();
-    userId && actors && (!userContent || directorIDs.length > 0) && fetchUserDirectors();
+    userId && movies && !userContent && !movieIDs && fecthUserWacthedMovies();
+    userId && genres && !userContent && !genreIDs && fetchUserGenres();
+    userId && actors && !userContent && !actorIDs && fetchUserActors();
+    userId && actors && !userContent && !directorIDs && fetchUserDirectors();
   }, [userContent, actors, genres, movies, userId]);
 
   return (
@@ -149,7 +149,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                   key={index}
                   movie={movie}
                   alreadyWatched={
-                    userContentIDs.concat(movieIDs).includes(movie.imdbid)
+                    (userContentIDs ? userContentIDs : []).concat(movieIDs ? movieIDs : []).includes(movie.imdbid)
                   }
                 />
               ))}
@@ -162,7 +162,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                   key={index}
                   genre={genre}
                   liked={
-                    userContentIDs.concat(genreIDs).includes(genre.id)
+                    (userContentIDs ? userContentIDs : []).concat(genreIDs ? genreIDs : []).includes(genre.id)
                   }
                 />
               ))}
@@ -175,7 +175,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                   key={index}
                   actor={actor}
                   liked={
-                    userContentIDs.concat(actorIDs).concat(directorIDs).includes(actor.id)
+                    (userContentIDs ? userContentIDs : []).concat(actorIDs ? actorIDs : []).concat(directorIDs ? directorIDs : []).includes(actor.id)
                   }
                 />
               ))}
