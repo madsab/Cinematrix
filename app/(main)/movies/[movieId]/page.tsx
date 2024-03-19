@@ -6,6 +6,12 @@ import { auth } from "@/firebase/config";
 import { redirect } from "next/navigation";
 import Stars, { StarsRef } from "@/app/components/atoms/Stars";
 import Button from "@/app/components/atoms/Button";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import cn from "classnames";
+import { Actor } from "@/app/types/Actor";
+import MovieScrollArea from "@/app/components/MovieScrollArea";
+import { Genre } from "@/app/types/Genre";
+
 
 const MoviePage = ({ params }: { params: { movieId: string } }) => {
   const ref = useRef<StarsRef>(null);
@@ -16,12 +22,33 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [showButton, setShowButton] = useState(false);
   const [userMoviesIDs, setUserMoviesIDs] = useState<string[]>();
+  const [directors, setDirectors] = useState<Actor[]>();
+  const [actors, setActors] = useState<Actor[]>();
+  const [genres, setGenres] = useState<Genre[]>();
+
+
+  const [isLiked, setLiked] = useState(false);
+
+  const heart = isLiked ? "tabler:heart" : "tabler:heart-off";
+
+  const markAsLiked = () => {
+    let method = !isLiked ? "POST" : "DELETE";
+    userId && saveLikeToDb(method);
+    setLiked(!isLiked);
+  };
+
+  const saveLikeToDb = async (method: string) => {
+    await fetch(`/api/users/${userId}/movies?fieldType=Liked`, {
+      method: method,
+      body: JSON.stringify({ movieImdbId: params.movieId }),
+    });
+  };
+
 
   useEffect(() => {
     const fetchMovies = async () => {
       const res = await fetch("/api/getMovieByID?id=" + params.movieId, {
         method: "GET",
-        cache: "force-cache",
       });
       const data = await res.json();
       setMovie(data);
@@ -48,7 +75,62 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
       console.log(data);
       setUserMoviesIDs(data);
     };
+
+    const checkIfMovieLiked = async () => {
+      const res = await fetch(
+        `/api/users/${userId}/movies?fieldType=Liked&type=ID`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json() as String[];
+      setLiked(data.includes(params.movieId));
+    }
+
+    const fetchDirectors = async () => {
+      const res = await fetch(`/api/actorsByMovie?fieldType=Directed&movieID=` + params.movieId, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      setDirectors(data);
+    };
+
+    const fetchActors = async () => {
+      const res = await fetch(`/api/actorsByMovie?fieldType=ActedIn&movieID=` + params.movieId, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      setActors(data);
+    };
+
+    const fetchGenres = async () => {
+      const res = await fetch(`/api/genresByMovie?movieID=` + params.movieId, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      setGenres(data);
+    };
+    
+
     userId && fetchUserWacthedMovies();
+    userId && checkIfMovieLiked();
+    fetchDirectors();
+    fetchActors();
+    fetchGenres();
   }, [userId]);
 
   auth.onAuthStateChanged((user) => {
@@ -100,23 +182,26 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
                 )}
               </div>
               <div className="flex flex-col justify-start p-5 ">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-6 border-b border-gray-200 pb-2">
-                  {movie?.title}
-                </h1>
+                <div className="flex items-center w-full justify-center space-x-2 mb-6 border-b border-gray-200 pb-2">
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold">
+                    {movie?.title}
+                  </h1>
+                  <Icon
+                  icon={heart}
+                  width={60}
+                  height={60}
+                  onClick={() => userId && markAsLiked()}
+                  className={cn(
+                    "hover:cursor-pointer ease-linear duration-100 rounded-md",
+                    isLiked ? "bg-white text-black" : "text-white")}
+                  />
+                </div>
                 <p className="text-md md:text-lg lg:text-xl mb-8 ">
                   {movie?.description}
                 </p>
                 <div className="space-y-3">
-                  <p className="mb-2">
-                    <span className="font-bold">Genres:</span>{" "}
-                    {movie?.genre?.join(", ")}
-                  </p>
-                  <p>
-                    <span className="font-bold"> Director: </span>
-                  </p>
-                  <p>
-                    <span className="font-bold"> Actors: </span>
-                  </p>
+                  <MovieScrollArea title={"Genres"} movies={[]} actors={[]} genres={genres || []}/>
+
                   <p>
                     <span className="font-bold"> Release year: </span>{" "}
                     {movie?.year}
@@ -157,6 +242,14 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
                 </Button>
               </div>
             )}
+            <div className="flex space-x-10">
+            <div className="w-1/2">
+              <MovieScrollArea title={"Directors"}movies={[]} actors={directors || []} genres={[]}/>
+            </div>
+            <div className="w-1/2">
+              <MovieScrollArea title={"Actors"} movies={[]} actors={actors || []} genres={[]}/>
+            </div>
+            </div>
           </div>
         </div>
       )}
