@@ -1,11 +1,13 @@
 "use client";
 
-import MovieScrollArea from "@/app/components/MovieScrollArea";
-import { Actor } from "@/app/types/Actor";
-import { Movie } from "@/app/types/Movie";
-import { auth } from "@/firebase/config";
+import MovieScrollArea from "../../../components/MovieScrollArea";
+import { Actor } from "../../../types/Actor";
+import { Movie } from "../../../types/Movie";
+import { auth } from "../../../../firebase/config";
 import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { Icon } from "@iconify/react";
+import cn from "classnames";
 
 export default function ActorPage({ params }: { params: { actorId: string } }) {
   const [actor, setActor] = useState<Actor>();
@@ -14,6 +16,30 @@ export default function ActorPage({ params }: { params: { actorId: string } }) {
   const [userId, setUserId] = useState<string | null>(null);
   const [ActedIn, setActedIn] = useState<Movie[]>([]);
   const [DirectedIn, setDirectedIn] = useState<Movie[]>([]);
+  const [isLiked, setLiked] = useState(false);
+  const heart = isLiked ? "tabler:heart" : "tabler:heart-off";
+
+  const markAsLiked = () => {
+    let method = !isLiked ? "POST" : "DELETE";
+    saveToDb(method);
+    setLiked(!isLiked);
+  };
+
+  const saveToDb = async (method: string) => {
+    if (actor && actor.Directed.length > 0) {
+      await fetch(`/api/users/${userId}/actors?fieldType=directorsLiked`, {
+        method: method,
+        body: JSON.stringify({ actorID: actor.id }),
+      });
+    }
+
+    if (actor && actor.ActedIn.length > 0) {
+      await fetch(`/api/users/${userId}/actors?fieldType=actorsLiked`, {
+        method: method,
+        body: JSON.stringify({ actorID: actor.id }),
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchActor = async () => {
@@ -71,9 +97,21 @@ export default function ActorPage({ params }: { params: { actorId: string } }) {
     <div className="bg-gradient-to-r from-black to-[#801336] text-white overflow-hidden shadow-lg p-5 min-h-screen w-full">
       <div className="flex flex-col md:flex-row justify-center items-center md:items-start">
         <div className="text-center md:text-left md:mr-8">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 ">
-            {actor?.name}
-          </h1>
+          <div className="flex items-center justify-center md:justify-start">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-4">
+              {actor?.name}
+            </h1>
+            <Icon
+              icon={heart}
+              width={50}
+              height={50}
+              onClick={() => markAsLiked()}
+              className={cn(
+                "ml-5 hover:cursor-pointer ease-linear duration-100 rounded-md",
+                isLiked ? "bg-white text-black" : "text-white"
+              )}
+            />
+          </div>
           {actor?.image && (
             <img
               src={actor.image}
