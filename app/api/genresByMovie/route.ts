@@ -20,8 +20,6 @@ export async function GET(req: NextRequest) {
 
         const result: any[] = []
 
-        console.log(genresRelevant);
-
         for(let i = 0; i < genresRelevant.length; i++) {
             const genreDB = doc(db, "genres", genresRelevant[i]);
             const data = await getDoc(genreDB)

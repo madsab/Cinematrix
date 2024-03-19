@@ -224,7 +224,7 @@ export default function Home() {
             <MovieScrollArea
                 title="Our genres"
                 genres={genres}
-                userContent={userLikedGenres} movies={[]} actors={[]}            />
+                movies={[]} actors={[]}            />
           </section>
 
           <div>{user?.email}</div>

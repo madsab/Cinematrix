@@ -200,8 +200,6 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
                   {movie?.description}
                 </p>
                 <div className="space-y-3">
-                  <MovieScrollArea title={"Genres"} movies={[]} actors={[]} genres={genres || []}/>
-
                   <p>
                     <span className="font-bold"> Release year: </span>{" "}
                     {movie?.year}
@@ -210,6 +208,17 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
                     <span className="font-bold">Rating:</span> {movie?.rating}
                     /10
                   </p>
+                  <div className="flex space-x-10 flex-wrap">
+              <div className="">
+                <MovieScrollArea title={"Directors"}movies={[]} actors={directors || []} genres={[]}/>
+              </div>
+              <div className="">
+                <MovieScrollArea title={"Actors"} movies={[]} actors={actors || []} genres={[]}/>
+              </div>
+              <div className="">
+                <MovieScrollArea title={"Genres"} movies={[]} actors={[]} genres={genres || []}/>
+              </div>
+            </div>
                 </div>
                 <div className="mt-8 space-y-2">
                   <p>
@@ -242,14 +251,6 @@ const MoviePage = ({ params }: { params: { movieId: string } }) => {
                 </Button>
               </div>
             )}
-            <div className="flex space-x-10">
-            <div className="w-1/2">
-              <MovieScrollArea title={"Directors"}movies={[]} actors={directors || []} genres={[]}/>
-            </div>
-            <div className="w-1/2">
-              <MovieScrollArea title={"Actors"} movies={[]} actors={actors || []} genres={[]}/>
-            </div>
-            </div>
           </div>
         </div>
       )}

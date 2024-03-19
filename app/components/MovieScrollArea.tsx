@@ -51,7 +51,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   };
 
   useEffect(() => {
-    setUserContentIDs(userContent);
+    //setUserContentIDs(userContent);
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUserId(user.uid);
@@ -78,9 +78,9 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
         headers: {
           "Content-Type": "application/json",
         },
-        cache: "force-cache",
       });
       const data = await res.json();
+
       setUserContentIDs(data);
     };
 
@@ -109,7 +109,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
         }
       );
       const data = await res.json();
-      setDirectorIDs(data);
+      setUserContentIDs(data);
     };
 
     userId && movies && !userContent && fecthUserWacthedMovies();
@@ -172,11 +172,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                   key={index}
                   actor={actor}
                   liked={
-                    userContentIDs || directorIDs
-                      ? (userContentIDs || [])
-                          .concat(directorIDs || [])
-                          .includes(actor.id)
-                      : false
+                    userContentIDs ? userContentIDs.includes(actor.id) : false
                   }
                 />
               ))}
