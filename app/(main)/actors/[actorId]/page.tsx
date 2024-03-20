@@ -72,14 +72,50 @@ export default function ActorPage({ params }: { params: { actorId: string } }) {
       setDirectedIn(data);
     };
 
+    const fetchActorsLiked = async () => {
+      const res = await fetch(
+        `/api/users/${userId}/actors?type=ID&fieldType=actorsLiked`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json() as string[];
+      data.forEach(d => {
+        if (params.actorId == d) 
+          setLiked(true);
+      })
+    };
+
+    const fetchDirectorsLiked = async () => {
+      const res = await fetch(
+        `/api/users/${userId}/actors?type=ID&fieldType=directorsLiked`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json() as string[];
+      data.forEach(d => {
+        if (params.actorId == d) 
+          setLiked(true);
+      })
+    };
+
     if (notLoggedIn) {
       redirect("/signin");
     } else {
-      fetchActor();
-      fetchActedIn();
-      fetchDirectedIn();
+      userId && fetchActorsLiked();
+      userId && fetchDirectorsLiked();
+      userId && fetchActor();
+      userId && fetchActedIn();
+      userId && fetchDirectedIn();
     }
-  }, [notLoggedIn]);
+  }, [notLoggedIn, userId]);
 
   auth.onAuthStateChanged((user) => {
     setLoading(false);
@@ -120,23 +156,30 @@ export default function ActorPage({ params }: { params: { actorId: string } }) {
             />
           )}
         </div>
-        <div className="flex flex-col justify-start p-5">
-          <section>
+        <div className="flex flex-col justify-start p-5 w-1/2">
+          {
+            actor && actor.ActedIn.length > 0 &&
+            <section>
             <MovieScrollArea
               title={"Movies " + (actor?.name || "") + " is actor in:"}
               movies={ActedIn}
               actors={[]}
               genres={[]}
             />
-          </section>
+            </section>
+          }
+
+          {
+            actor && actor.Directed.length > 0 &&
           <section>
-            <MovieScrollArea
+              <MovieScrollArea
               title={"Movies " + (actor?.name || "") + " has directed:"}
               movies={DirectedIn}
               actors={[]}
               genres={[]}
             />
-          </section>
+             </section>
+          }
         </div>
       </div>
     </div>
