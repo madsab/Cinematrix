@@ -44,6 +44,7 @@ export default function Home() {
     const fetchPopularMovies = async () => {
       const res = await fetch("/api/PopularMovies", {
         method: "GET",
+        cache: "force-cache",
       });
       const data = await res.json();
       setPopularMovies(data);
@@ -122,9 +123,8 @@ export default function Home() {
             <MovieScrollArea
               title="Top 10 movies"
               movies={PopularMovies}
-              actors={[]}
-              genres={[]}
               isTopTen={true}
+              userContent={userWatchedMovies}
             />
 
             <MovieScrollArea
