@@ -40,7 +40,7 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
         const likedGenres: any[] = []
 
         genresLiked.forEach((genre: string) => {
-            likedGenres.push(genre.toLowerCase()) // make lowercase bcus sw deals with lowercase
+            likedGenres.push(genre.toLowerCase().replace(/[^a-zA-Z]/g, '')) // make lowercase bcus sw deals with lowercase
         })
         const data = await getDocs(query(genreDB, where("sw", "in", likedGenres)))
 

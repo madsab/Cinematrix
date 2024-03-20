@@ -61,7 +61,7 @@ const ActorCard: FC<ActorCardProps> = ({
 
   return (
     <div className="flex flex-col items-center w-[150px] h-fit space-y-2 ">
-      <div className="overflow-hidden w-[150px] h-[222px] rounded-md hover:scale-105 transition-transform">
+      <div className="overflow-hidden w-[150px] h-[222px] rounded-md hover:scale-105 transition-transform bg-night">
       <Image
         onClick={() => router.push(`/actors/${actor.id}`)}
         src={actor.image}
