@@ -16,6 +16,7 @@ export default function Home() {
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
+  const [PopularMovies, setPopularMovies] = useState<Movie[]>([]);
   const [userWatchedMovies, setUserWatchedMovies] = useState<string[]>([]);
   const [userLikedGenres, setUserLikedGenres] = useState<string[]>([]);
   const [forYouData, setForYouData] = useState<Movie[]>();
@@ -38,6 +39,15 @@ export default function Home() {
       });
       const data = await res.json();
       setMovies(data);
+    };
+
+    const fetchPopularMovies = async () => {
+      const res = await fetch("/api/PopularMovies", {
+        method: "GET",
+        cache: "force-cache",
+      });
+      const data = await res.json();
+      setPopularMovies(data);
     };
 
     const fetchGenres = async () => {
@@ -67,7 +77,7 @@ export default function Home() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-        }
+        },
       });
       const data = await res.json();
       setUserLikedGenres(data);
@@ -77,6 +87,7 @@ export default function Home() {
       redirect("/signin");
     } else if (user) {
       fetchMovies();
+      fetchPopularMovies();
       fetchGenres();
       fecthUserWacthedMovies();
       fetchUserGenres();
@@ -99,6 +110,7 @@ export default function Home() {
       ) : (
         <div>
           <ImgCarousel />
+
           <section className="-mt-[5%] backdrop-blur-sm pt-5">
             {!(userWatchedMovies.length == 0) && (
               <MovieScrollArea
@@ -107,37 +119,38 @@ export default function Home() {
                 userContent={userWatchedMovies}
               />
             )}
-          </section>
 
-          <section>
+            <MovieScrollArea
+              title="Top 10 movies"
+              movies={PopularMovies}
+              isTopTen={true}
+              userContent={userWatchedMovies}
+            />
+
             <MovieScrollArea
               title="Action"
               movies={movies.filter((movie) => movie.genre.includes("Action"))}
               userContent={userWatchedMovies}
             />
-          </section>
-          <section>
+
             <MovieScrollArea
               title="Drama"
               movies={movies.filter((movie) => movie.genre.includes("Drama"))}
               userContent={userWatchedMovies}
             />
-          </section>
-          <section>
+
             <MovieScrollArea
               title="Comedy"
               movies={movies.filter((movie) => movie.genre.includes("Comedy"))}
               userContent={userWatchedMovies}
             />
-          </section>
-          <section>
+
             <MovieScrollArea
               title="Movies so bad, you have to watch them!"
               movies={movies.filter((movie) => movie.genre.includes("Bad"))}
               userContent={userWatchedMovies}
             />
-          </section>
-          <section>
+
             <MovieScrollArea
               title="Our genres"
               genres={genres}
