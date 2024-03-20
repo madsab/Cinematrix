@@ -93,19 +93,19 @@ const Favourites = () => {
   return (
     <div className="">
       <ProfileBanner username={upperUsername} type={"Favourites"}/>
-      <div className="flex space-x-10">
-          <div className="w-1/2">
+      <div className="flex space-x-10 justify-center">
+          <div className="w-5/12">
             <MovieScrollArea className="bg-gradient-to-t from-black from-20% via-pink-950 to-black to-80%" title={<span className="flex items-center">Favourite genres &nbsp;<Icon icon="tabler:globe-filled"/> </span>} movies={[]} genres={favouriteGenres} actors={[]}/>
           </div>
-          <div className="w-1/2">
+          <div className="w-5/12">
             <MovieScrollArea className="bg-gradient-to-t from-black from-20% via-pink-950 to-black to-80%" title={<span className="flex items-center">Favourite actors &nbsp;<Icon icon="tabler:user-heart"/> </span>} movies={[]} genres={[]} actors={likedActors}/>
           </div>
       </div>
-      <div className=" flex space-x-10">
-        <div className="w-1/2">
+      <div className="flex space-x-10 justify-center">
+        <div className="w-5/12">
           <MovieScrollArea className="bg-gradient-to-t from-black from-20% via-pink-950 to-black to-80%" title={<span className="flex items-center">Favourite movies &nbsp;<Icon icon="tabler:movie"/> </span>} movies={likedMovies} genres={[]} actors={[]}/>
         </div>
-        <div className="w-1/2">
+        <div className="w-5/12">
           <MovieScrollArea className="bg-gradient-to-t from-black from-20% via-pink-950 to-black to-80%" title={<span className="flex items-center">Favourite directors &nbsp;<Icon icon="game-icons:director-chair"/> </span>} movies={[]} genres={[]} actors={likedDirectors}/>
         </div>
       </div>
