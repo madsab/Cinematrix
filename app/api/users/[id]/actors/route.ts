@@ -4,14 +4,14 @@ import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 
 type type = "ID" | null
-type genreID = string | null
+type actorID = string | null
 type fieldType = "directorsLiked" | "actorsLiked" | null
 
 
 export async function GET(req: NextRequest, params: {params: { id: string }}) {
     const fieldType = req.nextUrl.searchParams.get("fieldType") as fieldType 
     const type = req.nextUrl.searchParams.get("type") as type 
-    const actorID = req.nextUrl.searchParams.get("genreID") as genreID 
+    const actorID = req.nextUrl.searchParams.get("actorID") as actorID 
     const userID = params.params.id
 
     const userDB = doc(db, "users", userID)
@@ -26,6 +26,7 @@ export async function GET(req: NextRequest, params: {params: { id: string }}) {
         }
 
         const actorsLiked = (await getDoc(userDB)).get(fieldType) as []
+        
 
         if (type === "ID") {
             return new Response(JSON.stringify(actorsLiked))

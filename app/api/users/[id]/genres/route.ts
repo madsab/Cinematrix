@@ -4,12 +4,12 @@ import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 
 type type = "ID" | null
-type movieID = string | null
+type genreID = string | null
 
 
 export async function GET(req: NextRequest, params: {params: { id: string }}) {
     const type = req.nextUrl.searchParams.get("type") as type 
-    const genreID = req.nextUrl.searchParams.get("genreID") as movieID 
+    const genreID = req.nextUrl.searchParams.get("genreID") as genreID 
     const userID = params.params.id
 
     const userGenresDB = doc(db, "users", userID)

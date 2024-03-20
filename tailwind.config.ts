@@ -5,6 +5,8 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/flowbite/**/*.js",
+    'node_modules/flowbite-react/lib/esm/**/*.js',
   ],
   theme: {
     extend: {
@@ -20,11 +22,42 @@ const config: Config = {
         'grape': '#510A32',
         'night': '#2D142C'
       },
+
+      fontSize: {
+        'Button': ['22px', '21px'],
+      },
       boxShadow: {
         "inner-x": "inset 0px 0px 15px 10px rgba(0, 0, 0, 0.5);",
     },
+    keyframes: {
+      slideDownAndFade: {
+        from: { opacity: '0', transform: 'translateY(-2px)' },
+        to: { opacity: '1', transform: 'translateY(0)' },
+      },
+      slideLeftAndFade: {
+        from: { opacity: '0', transform: 'translateX(2px)' },
+        to: { opacity: '1', transform: 'translateX(0)' },
+      },
+      slideUpAndFade: {
+        from: { opacity: '0', transform: 'translateY(2px)' },
+        to: { opacity: '1', transform: 'translateY(0)' },
+      },
+      slideRightAndFade: {
+        from: { opacity: '0', transform: 'translateX(-2px)' },
+        to: { opacity: '1', transform: 'translateX(0)' },
+      },
+    },
+    animation: {
+      slideDownAndFade: 'slideDownAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+      slideLeftAndFade: 'slideLeftAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+      slideUpAndFade: 'slideUpAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+      slideRightAndFade: 'slideRightAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)',
+    },
    },
-  plugins: [],
+  plugins: [
+    require('flowbite/plugin')
+  ],
+
 }
 };
 

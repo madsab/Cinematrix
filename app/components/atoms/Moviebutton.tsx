@@ -22,18 +22,18 @@ export default function MovieButton({
 
   return (
     <button
-      className={` w-fit flex items-start border border-[#CDDBC9] bg-[#CDDBC9] rounded-md px-2 py-1 ${
-        clicked ? "text-[#AD480F]" : "text-[#37A81B]"
-      } hover:bg-[#CDDBC9] hover:scale-105 transform transition-all duration-150 ease-in-out`}
+      className={` w-fit flex items-center rounded-md px-2 py-1 ${
+        clicked ? "text-[#37A81B] bg-[#CDDBC9]" : "text-[#892e4b] bg-[#f3ebed]"
+      } hover:scale-105 transform transition-all duration-150 ease-in-out`}
       onClick={handleClick}
     >
       <Icon
-        icon={clicked ? "tabler:eye-off" : "tabler:eye"}
-        className="icon mr-1 mt-[3.5px] text-xl"
-        color={clicked ? "#AD480F" : "#37A81B"}
+        icon={clicked ? "tabler:check" : "tabler:plus"}
+        className="icon mr-1 text-xl"
+        color={clicked ? "#37A81B" : "#892e4b"}
       />
       <span>
-        {clicked ? "Remove from watched movies" : "Add to watched movies"}
+        {clicked ? "You've watched this movie" : "Add to Watchedlist"}
       </span>
     </button>
   );
