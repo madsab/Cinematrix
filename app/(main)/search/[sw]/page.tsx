@@ -11,6 +11,7 @@ import { usePathname } from 'next/navigation'
 import { Actor } from "@/app/types/Actor";
 import { Genre } from "@/app/types/Genre";
 
+type searchFilter = "actors" | "genres" | "movies" | null
 
 export default function Search() {
   const [loading, setLoading] = useState(true);
@@ -21,7 +22,29 @@ export default function Search() {
   const [actors, setActors] = useState<Actor[]>();
 
   const path = usePathname().split("/");
-  const sw = path[path.length-1];
+  let sw = path[path.length-1];
+
+  //filter searchword
+  let filter: searchFilter;
+  if (sw[1] == ":") {
+    switch (sw[0]) {
+      case 'm':
+        filter = "movies";
+        break;
+      case 'a':
+        filter = "actors";
+        break;
+      case 'g':
+        filter = "genres";
+        break;
+      default:
+        filter = null;
+    }
+    if (filter) {
+      sw = sw.substring(2);
+    }
+  }
+
   const search = "../api/search?sw=" + sw + "&type=";
 
   useEffect(() => {
@@ -53,9 +76,19 @@ export default function Search() {
     if (notLoggedIn) {
       redirect("/signin");
     } else {
-      fetchMovies();
-      fetchActors();
-      fetchGenres();
+      console.log("test");
+
+      if (filter == "movies") {
+        fetchMovies();
+      } else if (filter == "actors") {
+        fetchActors();
+      } else if (filter == "genres") {
+        fetchGenres();
+      } else {
+        fetchMovies();
+        fetchActors();
+        fetchGenres();      
+      }
     }
   }, [notLoggedIn]);
 
@@ -73,13 +106,13 @@ export default function Search() {
 
   return (
     <main className="">
-      {!movies ? (
+      {!(movies || actors || genres) ? (
         <div>Loading</div>
       ) : (
         <div>
           <div className="relative">
           <section className="backdrop-blur-sm bg-slate-950/30">
-            <MovieScrollArea title={"Results for " + sw + "..."} movies={movies} genres={genres || []} actors={actors || []} />
+            <MovieScrollArea title={"Results for " + sw + "..."} movies={movies || []} genres={genres || []} actors={actors || []} />
           </section>
         </div>
         </div>
