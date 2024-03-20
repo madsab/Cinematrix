@@ -34,6 +34,9 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   const [showRating, setShowRating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [userContentIDs, setUserContentIDs] = useState<string[]>();
+  const [genreIDs, setGenreIDs] = useState<string[]>();
+  const [movieIDs, setMovieIDs] = useState<string[]>()
+  const [actorIDs, setActorIDs] = useState<string[]>();
   const [directorIDs, setDirectorIDs] = useState<string[]>();
 
   const closeRating = () => {
@@ -50,8 +53,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
     ref.current && ref.current.saveToDb();
   };
 
-  useEffect(() => {
-    setUserContentIDs(userContent);
+  useEffect(() => {    
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUserId(user.uid);
@@ -69,7 +71,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
         }
       );
       const data = await res.json();
-      setUserContentIDs(data);
+      setMovieIDs(data);
     };
 
     const fetchUserGenres = async () => {
@@ -78,10 +80,10 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
         headers: {
           "Content-Type": "application/json",
         },
-        cache: "force-cache",
       });
       const data = await res.json();
-      setUserContentIDs(data);
+
+      setGenreIDs(data);
     };
 
     const fetchUserActors = async () => {
@@ -95,7 +97,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
         }
       );
       const data = await res.json();
-      setUserContentIDs(data);
+      setActorIDs(data);
     };
 
     const fetchUserDirectors = async () => {
@@ -112,10 +114,13 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       setDirectorIDs(data);
     };
 
-    userId && movies && !userContent && fecthUserWacthedMovies();
-    userId && genres && !userContent && fetchUserGenres();
-    userId && actors && !userContent && fetchUserActors();
-    userId && actors && !userContent && fetchUserDirectors();
+    if (userContent)
+      setUserContentIDs(userContent);
+
+    userId && movies && !userContent && !movieIDs && fecthUserWacthedMovies();
+    userId && genres && !userContent && !genreIDs && fetchUserGenres();
+    userId && actors && !userContent && !actorIDs && fetchUserActors();
+    userId && actors && !userContent && !directorIDs && fetchUserDirectors();
   }, [userContent, actors, genres, movies, userId]);
 
   return (
@@ -144,9 +149,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                   key={index}
                   movie={movie}
                   alreadyWatched={
-                    userContentIDs
-                      ? userContentIDs.includes(movie.imdbid)
-                      : false
+                    (userContentIDs ? userContentIDs : []).concat(movieIDs ? movieIDs : []).includes(movie.imdbid)
                   }
                 />
               ))}
@@ -159,7 +162,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                   key={index}
                   genre={genre}
                   liked={
-                    userContentIDs ? userContentIDs.includes(genre.id) : false
+                    (userContentIDs ? userContentIDs : []).concat(genreIDs ? genreIDs : []).includes(genre.id)
                   }
                 />
               ))}
@@ -172,11 +175,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                   key={index}
                   actor={actor}
                   liked={
-                    userContentIDs || directorIDs
-                      ? (userContentIDs || [])
-                          .concat(directorIDs || [])
-                          .includes(actor.id)
-                      : false
+                    (userContentIDs ? userContentIDs : []).concat(actorIDs ? actorIDs : []).concat(directorIDs ? directorIDs : []).includes(actor.id)
                   }
                 />
               ))}

@@ -17,8 +17,7 @@ const Navbar = () => {
           <Image src={Logo} width={100} height={40} alt={"Cinematrix Logo"} />
         </Link>
         <Link href="/browse">Browse</Link>
-        <Link href="/movies">Movies</Link>
-        <Link href="/series">Series</Link>
+        <Link href="/genres">Genres</Link>
         <div className="relative hidden md:block">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg

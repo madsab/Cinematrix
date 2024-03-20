@@ -28,7 +28,7 @@ const Favourites = () => {
 
     const fecthFavouriteGenres = async () => {
       if (userId === null) return;
-      const res = await fetch(`/api/users/${userId}/genres?fieldType=genresLiked`, {
+      const res = await fetch(`/api/users/${userId}/genres`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +71,7 @@ const Favourites = () => {
 
     const fetchlikedMovies = async () => {
       if (userId === null) return;
-      const res = await fetch(`/api/users/${userId}/movies?fieldType=moviesLiked`, {
+      const res = await fetch(`/api/users/${userId}/movies?fieldType=Liked`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
