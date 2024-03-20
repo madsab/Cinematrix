@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     const type= req.nextUrl.searchParams.get('movieData') as string;
     try {
         const movieCollection = collection(db, "movies")
-        const q = query(movieCollection, where("rank", "<", 10), orderBy("rank", "asc"), limit(10))
+        const q = query(movieCollection, where("rank", "<=", 10), orderBy("rank", "asc"), limit(10))
         const data = await getDocs(q)
         const movies = data.docs.map((doc) => {
             const movieData = doc.data();

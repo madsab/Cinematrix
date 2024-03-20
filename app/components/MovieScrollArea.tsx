@@ -38,7 +38,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
   const [userId, setUserId] = useState<string | null>(null);
   const [userContentIDs, setUserContentIDs] = useState<string[]>();
   const [genreIDs, setGenreIDs] = useState<string[]>();
-  const [movieIDs, setMovieIDs] = useState<string[]>()
+  const [movieIDs, setMovieIDs] = useState<string[]>();
   const [actorIDs, setActorIDs] = useState<string[]>();
   const [directorIDs, setDirectorIDs] = useState<string[]>();
 
@@ -56,7 +56,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
     ref.current && ref.current.saveToDb();
   };
 
-  useEffect(() => {    
+  useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         setUserId(user.uid);
@@ -117,8 +117,7 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       setDirectorIDs(data);
     };
 
-    if (userContent)
-      setUserContentIDs(userContent);
+    if (userContent) setUserContentIDs(userContent);
 
     userId && movies && !userContent && !movieIDs && fecthUserWacthedMovies();
     userId && genres && !userContent && !genreIDs && fetchUserGenres();
@@ -143,20 +142,23 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
       <div className="relative">
         <ScrollArea className={cn("whitespace-nowrap rounded-md", className)}>
           <div className="flex w-max space-x-8 p-4 z-0">
-          {movies && movies instanceof Array && movies.length != 0 &&
-            movies.map((movie, index) => (
-              <div className="relative inline-block px-2" key={index}>
-                {isTopTen && index < 10 && <TopMovieBadge rank={index + 1} />}
-                <MovieCard
-                  openRating={openRating(movie)}
-                  movie={movie}
-                  alreadyWatched={
-                    (userContentIDs ? userContentIDs : []).concat(movieIDs ? movieIDs : []).includes(movie.imdbid)
-                  }
-                />
-              </div>
-            ))
-          }
+            {movies &&
+              movies instanceof Array &&
+              movies.length != 0 &&
+              movies.map((movie, index) => (
+                <div className="relative inline-block px-2" key={index}>
+                  {isTopTen && index <= 10 && (
+                    <TopMovieBadge rank={index + 1} />
+                  )}
+                  <MovieCard
+                    openRating={openRating(movie)}
+                    movie={movie}
+                    alreadyWatched={(userContentIDs ? userContentIDs : [])
+                      .concat(movieIDs ? movieIDs : [])
+                      .includes(movie.imdbid)}
+                  />
+                </div>
+              ))}
 
             {genres &&
               genres instanceof Array &&
@@ -165,9 +167,9 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                 <GenreCard
                   key={index}
                   genre={genre}
-                  liked={
-                    (userContentIDs ? userContentIDs : []).concat(genreIDs ? genreIDs : []).includes(genre.id)
-                  }
+                  liked={(userContentIDs ? userContentIDs : [])
+                    .concat(genreIDs ? genreIDs : [])
+                    .includes(genre.id)}
                 />
               ))}
 
@@ -178,9 +180,10 @@ const MovieScrollArea: FC<MovieScrollAreaProps> = ({
                 <ActorCard
                   key={index}
                   actor={actor}
-                  liked={
-                    (userContentIDs ? userContentIDs : []).concat(actorIDs ? actorIDs : []).concat(directorIDs ? directorIDs : []).includes(actor.id)
-                  }
+                  liked={(userContentIDs ? userContentIDs : [])
+                    .concat(actorIDs ? actorIDs : [])
+                    .concat(directorIDs ? directorIDs : [])
+                    .includes(actor.id)}
                 />
               ))}
 
