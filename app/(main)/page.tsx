@@ -36,6 +36,7 @@ export default function Home() {
     const fetchMovies = async () => {
       const res = await fetch("/api/movies", {
         method: "GET",
+        cache: "force-cache",
       });
       const data = await res.json();
       setMovies(data);
@@ -90,7 +91,7 @@ export default function Home() {
       fetchPopularMovies();
       fetchGenres();
       fecthUserWacthedMovies();
-      fetchUserGenres();
+      // fetchUserGenres();
     }
   }, [notLoggedIn, user]);
 
@@ -151,13 +152,13 @@ export default function Home() {
               userContent={userWatchedMovies}
             />
 
-            <MovieScrollArea
+            {/* <MovieScrollArea
               title="Our genres"
               genres={genres}
               userContent={userLikedGenres}
               movies={[]}
               actors={[]}
-            />
+            /> */}
           </section>
         </div>
       )}
