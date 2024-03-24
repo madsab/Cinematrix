@@ -5,17 +5,13 @@
 A web application for recommending movies.
 
 ## Project Description
-Cinematrix is a web application for tracking movies you have watched as well as parts about them that you enjoyed. You can rate movies, favorite genres, actors, directors and so on. 
+Cinematrix is a web application for tracking movies you have watched as well as parts about them that you enjoyed. You can rate movies, favorite genres, actors, directors and so on.
 
-The application will use this information to give recommendations for good movie candidates to choose from for your next film experience. We also offer the ability to filter through a database of movies in case the recommendations just aren't hitting right. 
+The application will use this information to give recommendations for good movie candidates to choose from for your next film experience. We also offer the ability to filter through a database of movies in case the recommendations just aren't hitting right.
 
 ## Getting started
 
-If you do not have **Node.js**, install that using nvm:
-
-```bash
-nvm install node
-```
+If you do not have <span style="font-size: 20px">**Node.js**</span> installed, install it [here](/https://nodejs.org/en):
 
 Then, navigate to the project folder and install dependencies:
 
@@ -40,15 +36,15 @@ Then open [http://localhost:3000](http://localhost:3000) with your browser to se
 
 ## Project status
 
-The project is being created for the subject **TDT4140 - Programvareutvikling** as a group project. It is still in development.
+The project is being created for the subject **TDT4140 - Programvareutvikling** as a group project.
 
-## Contributors: 
+## Contributors:
 - @annikasr
-- @haraljst 
-- @lassedi 
-- @madsab
-- @niklasu
+- [@madsab](https://github.com/madsab)
+- @haraljst
+- [@lassedickhausen](https://github.com/lassedickhausen)
+- [@Nikunne](https://github.com/Nikunne)
 - @sebasmu
-- @syndys
+- [@sindyshan](https://github.com/sindyshan)
 
 
