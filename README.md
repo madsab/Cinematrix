@@ -11,7 +11,7 @@ The application will use this information to give recommendations for good movie
 
 ## Getting started
 
-If you do not have <span style="font-size: 20px">**Node.js**</span> installed, install it [here](/https://nodejs.org/en):
+If you do not have <span style="font-size: 20px">**Node.js**</span> installed, install it [here](https://nodejs.org/en):
 
 Then, navigate to the project folder and install dependencies:
 
