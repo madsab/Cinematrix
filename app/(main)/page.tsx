@@ -36,7 +36,6 @@ export default function Home() {
     const fetchMovies = async () => {
       const res = await fetch("/api/movies", {
         method: "GET",
-        cache: "force-cache",
       });
       const data = await res.json();
       setMovies(data);
@@ -45,7 +44,6 @@ export default function Home() {
     const fetchPopularMovies = async () => {
       const res = await fetch("/api/PopularMovies", {
         method: "GET",
-        cache: "force-cache",
       });
       const data = await res.json();
       setPopularMovies(data);
@@ -60,15 +58,12 @@ export default function Home() {
     };
 
     const fecthUserWacthedMovies = async () => {
-      const res = await fetch(
-        `/api/users/${user?.uid}/movies?fieldType=Watched&type=ID`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await fetch(`/api/users/${user?.uid}/movies?fieldType=Watched&type=ID`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const data = await res.json();
       setUserWatchedMovies(data);
     };
@@ -114,11 +109,7 @@ export default function Home() {
 
           <section className="-mt-[5%] backdrop-blur-sm pt-5">
             {!(userWatchedMovies.length == 0) && (
-              <MovieScrollArea
-                title="For You"
-                movies={forYouData}
-                userContent={userWatchedMovies}
-              />
+              <MovieScrollArea title="For You" movies={forYouData} userContent={userWatchedMovies} />
             )}
 
             <MovieScrollArea
