@@ -14,7 +14,6 @@ const ImgCarousel = () => {
     const fetchSponsors = async () => {
       const res = await fetch("/api/sponsored", {
         method: "GET",
-        cache: "force-cache",
       });
       const data = await res.json();
       setSponsors(data);
@@ -24,12 +23,7 @@ const ImgCarousel = () => {
 
   return (
     <div className="relative container mx-auto mt-3 flex justify-content z-0 h-[35rem] w-full ">
-      <Carousel
-        className="h-full"
-        slideInterval={5000}
-        leftControl=" "
-        rightControl=" "
-      >
+      <Carousel className="h-full" slideInterval={5000} leftControl=" " rightControl=" ">
         {sponsors.map((image, index) => (
           <div key={index}>
             <img
