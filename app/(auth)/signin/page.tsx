@@ -5,8 +5,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase/config";
 
 export default function Signin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("user@test.com");
+  const [password, setPassword] = useState("epz-fdb.rjz.BJE1azd");
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -42,32 +42,26 @@ export default function Signin() {
           <div className="flex w-full flex-wrap space-y-4">
             <div className="w-full flex items-center justify-center">
               <input
-                className={
-                  (error != "" && "border-2 border-fire") +
-                  " bg-white text-black rounded-md px-2 py-2"
-                }
+                className={(error != "" && "border-2 border-fire") + " bg-white text-black rounded-md px-2 py-2"}
                 id="email"
                 name="email"
                 type="email"
+                defaultValue={"user@test.com"}
                 placeholder="Email"
                 autoComplete="email"
                 onChange={(e) => setEmail(e.target.value)}
-                required
               />
             </div>
             <div className="w-full flex items-center justify-center">
               <input
-                className={
-                  (error != "" && "border-2 border-fire") +
-                  " bg-white text-black rounded-md px-2 py-2"
-                }
+                className={(error != "" && "border-2 border-fire") + " bg-white text-black rounded-md px-2 py-2"}
                 id="password"
                 name="password"
                 type="password"
+                defaultValue={"epz-fdb.rjz.BJE1azd"}
                 placeholder="Password"
                 autoComplete="current-password"
                 onChange={(e) => setPassword(e.target.value)}
-                required
               />
             </div>
             {errorDiv(error)}
